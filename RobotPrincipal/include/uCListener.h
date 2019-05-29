@@ -11,7 +11,7 @@
      #define ARDUINOSLAVE_H
 
     ///< Global includes
-    #include <MiAMEurobot/MiAMEurobot.h>
+    #include <drivers/UART-Wrapper.h>
 
     typedef struct {
         double encoderValues[2]; ///<< Current position of the two encoders, in rad.
