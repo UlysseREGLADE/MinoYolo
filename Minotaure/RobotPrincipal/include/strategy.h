@@ -1,5 +1,5 @@
 #include <iostream>
-#include "L6470Driver.h"
+#include "MinotaureLib/L6470Driver.h"
 #include <unistd.h>
 
 class Strategy
