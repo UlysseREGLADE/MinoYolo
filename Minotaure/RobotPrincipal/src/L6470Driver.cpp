@@ -12,7 +12,7 @@
 
 
 // Register definition and utility function for parameter length.
-#include "L6470Registers.h"
+#include "MinotaureLib/L6470Registers.h"
 
 namespace miam
 {

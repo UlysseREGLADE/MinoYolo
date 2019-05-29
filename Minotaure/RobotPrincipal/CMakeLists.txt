@@ -11,7 +11,7 @@ set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread")
 
 # Use pkg-config to find external libraries : Glib (compiled for arm) and BBBEurobot.
-find_package(PkgConfig REQUIRED)
+# find_package(PkgConfig REQUIRED)
 # Look for external libraries, and link them to the project.
 #unset(MINOTAURELIB_FOUND CACHE)
 #pkg_search_module(MINOTAURELIB REQUIRED MinotaureLib>=2.0)
