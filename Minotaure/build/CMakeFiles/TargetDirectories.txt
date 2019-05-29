@@ -1,7 +1,0 @@
-/home/pi/Minotaure/build/CMakeFiles/install/local.dir
-/home/pi/Minotaure/build/CMakeFiles/install.dir
-/home/pi/Minotaure/build/CMakeFiles/mainRobotCode.dir
-/home/pi/Minotaure/build/CMakeFiles/install/strip.dir
-/home/pi/Minotaure/build/CMakeFiles/edit_cache.dir
-/home/pi/Minotaure/build/CMakeFiles/rebuild_cache.dir
-/home/pi/Minotaure/build/CMakeFiles/list_install_components.dir

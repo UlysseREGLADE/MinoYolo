@@ -1,1 +1,0 @@
-g++   -Wall -Wno-psabi -fdiagnostics-color -lpthread   CMakeFiles/mainRobotCode.dir/src/L6470Driver.cpp.o CMakeFiles/mainRobotCode.dir/src/L6470Test.cpp.o CMakeFiles/mainRobotCode.dir/src/SPI-Wrapper.cpp.o  -o mainRobotCode -rdynamic 
