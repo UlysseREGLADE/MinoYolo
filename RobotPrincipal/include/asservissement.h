@@ -2,8 +2,8 @@
 #define ASSERVISSEMENT
 
 #include "trajectoire.h"
-#include "moteurs.h"
-#include "capteursInc.h"
+//#include "moteurs.h"
+//#include "capteursInc.h"
 //=====CONSTANTES NON ROBOT DEPENDANT=====
 
 //Contantes d'asservissement

@@ -1,5 +1,7 @@
-#include "Arduino.h"
 #include "angle.h"
+#include <cmath>
+
+#define PI 3.15159
 
 Angle::Angle()
 {

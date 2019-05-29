@@ -1,6 +1,7 @@
-#include "Arduino.h"
 #include "asservissement.h"
-#include "ecran.h" 
+#include <cmath>
+
+#define PI 3.15159
 
 #define ROBOT_PRINCIPAL 0
 #define ROBOT_SECONDAIRE 1
@@ -24,11 +25,9 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
   incAvantG=0;
 
   tempsAvant = 0;
-  CapteursInc::init();
-  Moteurs::init();
 
   //=====CONSTANTES ROBOT DEPENDANT=====
-  switch(typeRobot)
+  switch(typeRobot) //TODO
   {
     case ROBOT_PRINCIPAL :
       K_INC = 0.0000905052;
@@ -39,7 +38,6 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
       COEFF_ERREUR_POS_P = 12000;
       COEFF_ERREUR_POS_I = 30000;
       COEFF_ERREUR_POS_D = 2000;
-      Serial.println("Constantes robot principal");
       break;
     case ROBOT_SECONDAIRE :
       K_INC = 0.0000905052;
@@ -50,7 +48,6 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
       COEFF_ERREUR_POS_P = 12000;
       COEFF_ERREUR_POS_I = 3000;
       COEFF_ERREUR_POS_D = 1300;
-      Serial.println("Constantes robot secondaire");
       break;
     case ROBOT_TEST :
       K_INC = 0.000268;
@@ -61,10 +58,8 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
       COEFF_ERREUR_POS_P = 5000;
       COEFF_ERREUR_POS_I = 1000;
       COEFF_ERREUR_POS_D = 600;
-      Serial.println("Constantes robot test");
       break;
     default :
-      Serial.println("Grosse merde");
       break;
   }
 }
@@ -91,23 +86,20 @@ void Asservissement::init(double m_xInit, double m_yInit, Angle m_thetaInit)
   incAvantD=0;
   incAvantG=0;
 
-  CapteursInc::d = 0;
-  CapteursInc::g = 0;
+  //CapteursInc::d = 0;
+  //CapteursInc::g = 0;
 
   tempsAvant = 0;
-
-  Serial3.println("Théorie : x " + String(x) + " y " + String(y));
 
   nouvelleTrajectoire(new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5));
 }
 
 void Asservissement::actualise(long temps)
 {
-  //Serial.println("g " + String(CapteursInc::g) + " d " + String(CapteursInc::d));
   //On integre la position du robot
   
-  int NowD = CapteursInc::d;
-  int NowG = CapteursInc::g;
+  int NowD = 0;//TODO
+  int NowG = 0;
   x += cos(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   y += sin(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   theta = Angle(theta.versFloat() + atan((NowD-NowG-incAvantD+incAvantG)*K_INC/LARGEUR));
@@ -151,9 +143,6 @@ void Asservissement::actualise(long temps)
   erreurPosCour = traj->erreurPos(x, y, theta, temps);
   erreurRotCour = traj->erreurRot(x, y, theta, temps);
 
-  //Serial3.println("x " + String(x) + " y " + String(y) + " t " + String(theta.versFloat()/PI*180) + " ep " + String(erreurPosCour) + " er " + String(erreurRotCour));
-
-  //Serial.println(erreurRotCour);
 
   //Calcul du PID sur la trajectoire
   erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant)*0.000001);
@@ -174,33 +163,17 @@ void Asservissement::actualise(long temps)
  
   if(!traj->marcheArriere())
   {
-    Moteurs::avancent(+consigneP-consigneR, +consigneP+consigneR);
+    //Moteurs::avancent(+consigneP-consigneR, +consigneP+consigneR); TODO
   }
   else
   {
-    Moteurs::avancent(-consigneP-consigneR, -consigneP+consigneR);
+    //Moteurs::avancent(-consigneP-consigneR, -consigneP+consigneR); TODO
     theta = theta+Angle(PI);
   }
 
   //On actualise les variables de memoire
   tempsAvant=temps;
 
-  
-  /*Serial.print("X:");
-  Serial.println(x);
-
-  Serial.print("Y:");
-  Serial.println(y);
-
-  Serial.print("thheta:");
-  Serial.println(theta.versFloat());
-
-  Serial.print("erreurPosCour:");
-  Serial.println(erreurPosCour);
-
-   Serial.print("erreurRotCour:");
-  Serial.println(erreurRotCour);
-  */
 }
 
 double Asservissement::getX()

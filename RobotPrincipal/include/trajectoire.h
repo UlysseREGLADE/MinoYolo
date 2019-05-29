@@ -14,8 +14,8 @@ enum TypeTrajectoire{INDEFINI, ROTATION, DROITE};
 class Trajectoire
 {
   protected:
-    long int mDateDep, mDateAcc, mDateDec, mDateArr;
-    boolean mMarcheArriere = false;
+    long long mDateDep, mDateAcc, mDateDec, mDateArr;
+    bool mMarcheArriere = false;
 
   public:
     const TypeTrajectoire TYPE;
@@ -26,7 +26,6 @@ class Trajectoire
 
     virtual double erreurPos(double x, double y, Angle theta, long temps);
     virtual double erreurRot(double x, double y, Angle theta, long temps);
-
     void commence();
     bool estFinie(long temps);
 

@@ -1,5 +1,7 @@
-#include "Arduino.h"
 #include "trajectoire.h"
+#include <cmath>
+#define PI 3.15159
+
 
 Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type){mDateDep=0;}
 Trajectoire::~Trajectoire(){}
@@ -9,8 +11,7 @@ bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 
 void Trajectoire::commence()
 {
-	Serial3.println("commence");
-	mDateDep=micros();
+	mDateDep=0;
 }
 
 bool Trajectoire::estFinie(long iTemps)
@@ -44,7 +45,6 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
   if(2*angleAcc>angleTot)
   {
-    Serial3.println("Petite rotation");
     angleAcc = angleTot/2;
     dureeAcc = sqrt(2*angleAcc/mAccMax);
 
@@ -56,7 +56,6 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
   }
   else
   {
-    Serial3.println("Grande rotation");
     mAngleAcc = angleAcc;
     mAngleConst = angleTot-2*mAngleAcc;
     mDateAcc = 1000000*dureeAcc;
@@ -142,7 +141,6 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
 
     if(2*distAcc>dist)
     {
-      Serial3.println("Petite droite");
       mDistAcc = dist/2;
       mDistConst=0;
       dureeAcc = sqrt(2*mDistAcc/mAccMax);
@@ -152,7 +150,6 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
     }
     else
     {
-      Serial3.println("Grande droite");
       mDistAcc = distAcc;
       mDistConst = dist - 2*distAcc;
       mDateAcc = mDateDep + 1000000*dureeAcc;
