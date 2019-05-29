@@ -1,7 +1,0 @@
-/home/cstr/Code/MinoYolo/build/CMakeFiles/install/strip.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/edit_cache.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/mainRobotCode.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/rebuild_cache.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/list_install_components.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/install/local.dir
-/home/cstr/Code/MinoYolo/build/CMakeFiles/install.dir
