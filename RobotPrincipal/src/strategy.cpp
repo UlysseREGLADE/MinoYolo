@@ -1,8 +1,8 @@
 #include "strategy.h"
 #include "uCListener.h"
 #include "rplidar.h"
-using namespace std;
 #define PI 3.14159
+#define KILLTIME 100
 
 using namespace rp::standalone::rplidar;
 
@@ -26,18 +26,28 @@ double obtaintime()
 Strategy::Strategy()
 {
     asservissement = Asservissement(0.,0., Angle());
-}
-void Strategy::mainLoop()
-{
+    lidar = RPlidarDriver::CreateDriver();
 
-    RPlidarDriver* lidar = RPlidarDriver::CreateDriver();
-
-            u_result res = lidar->connect("/dev/ttyUSB0", 115200);
+    res = lidar->connect("/dev/ttyUSB0", 115200);
 
     if (IS_OK(res))
     {
-            lidar->startMotor();
+    lidar->startMotor();
+    }
+    else
+    {
+      std::cout<<"Lidar échoué"<<std::endl;
+    }
 
+}
+
+void Strategy::beginTimer()
+{
+tinitial = obtaintime();
+}
+
+void Strategy::mainLoop()
+{
   std::vector<RplidarScanMode> scanModes;
     lidar->getAllSupportedScanModes(scanModes);
     lidar->startScanExpress(false, scanModes[0].id);
@@ -46,7 +56,7 @@ void Strategy::mainLoop()
     int Nlimite = 8;
 
 int obstacles=0;
-while (!asservissement.trajFinie() || idAction<1)
+while (obtaintime()-KILLTIME)
 {
 compteur = 0;
         rplidar_response_measurement_node_hq_t nodes[8192];
@@ -106,11 +116,6 @@ compteur = 0;
     asservissement.stop();
       lidar->stopMotor();
         lidar->disconnect();
-    }
-    else
-    {
-        
-    }
         RPlidarDriver::DisposeDriver(lidar);
 
 }

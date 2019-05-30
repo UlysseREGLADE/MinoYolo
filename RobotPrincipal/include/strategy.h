@@ -11,8 +11,12 @@ class Strategy
         public:
         Asservissement asservissement;
         Strategy();
+        void beginTimer();
         void mainLoop();
         int idAction=0;
+        double tinitial;
+        RPlidarDriver* lidar;
+        u_result res;
     };
 
 #endif

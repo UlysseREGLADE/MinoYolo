@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #define PI 3.14159
+#define TIMEMARGIN 0.5
 
 
 Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type){mDateDep=0;}
@@ -13,7 +14,7 @@ bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 bool Trajectoire::estFinie(double iTemps)
 {
  // iTemps = iTemps-mDateDep;
-  if(iTemps > mDateArr + 0.5 || mDateArr == 0)
+  if(iTemps > mDateArr + TIMEMARGIN || mDateArr == 0)
   {
     return true;
   }

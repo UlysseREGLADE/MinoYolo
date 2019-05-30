@@ -19,6 +19,9 @@ int main(int argc, char **argv)
     bool coteJaune = false;
     bool hasStarted = false;
     //RPi_enablePorts();
+
+    Strategy strategy;
+
     while(!hasStarted)
     {
         if(digitalRead(pinTirette))
@@ -27,8 +30,10 @@ int main(int argc, char **argv)
             coteJaune = digitalRead(pinCote);
         }
         //ici coder l'interrupteur
-        usleep(10);
+        else
+        usleep(1);
     }
+    strategy.beginTimer()
     if(coteJaune)
     std::cout<<"cote jaune detecte"<<std::endl;
     else
@@ -55,24 +60,12 @@ int main(int argc, char **argv)
             std::cout<<"writing"<<std::endl;
 
     close(s);
-
-
-
-
-
     /*bool hasStarted = false;
     while(!hasStarted)
     {
         usleep(10);
         hasStarted=true;
     }*/
-
-
-
-
-
-
-
 
     if(!uCListener_start("/dev/arduinoUno"))
     {
@@ -81,7 +74,6 @@ int main(int argc, char **argv)
     //uCData test;
     //test = uCListener_getData();
 
-    Strategy strategy;
     strategy.mainLoop();
     return 0;
 }
