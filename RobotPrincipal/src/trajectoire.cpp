@@ -1,7 +1,7 @@
 #include "trajectoire.h"
 #include <cmath>
 #include <iostream>
-#define PI 3.15159
+#define PI 3.14159
 
 
 Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type){mDateDep=0;}
@@ -72,24 +72,23 @@ double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 
 double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
-  iTemps = iTemps-mDateDep;
-  if(iTemps<0)
+  if(iTemps<mDateDep)
   {
     return (mThetaDep-iTheta).versFloat();
   }
-  else if(0<iTemps && iTemps<mDateAcc)
+  else if(mDateDep<iTemps && iTemps<mDateAcc)
   {
-    Angle theta = mThetaDep + 0.5*mSens*mAccMax*pow((iTemps)*0.000001, 2);
+    Angle theta = mThetaDep + 0.5*mSens*mAccMax*pow((iTemps-mDateDep), 2);
     return (theta-iTheta).versFloat();
   }
   else if(mDateAcc<iTemps && iTemps<mDateDec)
   {
-    Angle theta = mThetaDep + mSens*(mAngleAcc + (iTemps-mDateAcc)*0.000001*mVitesseMax);
+    Angle theta = mThetaDep + mSens*(mAngleAcc + (iTemps-mDateAcc)*mVitesseMax);
     return (theta-iTheta).versFloat();
   }
   else if(mDateDec<iTemps && iTemps<mDateArr)
   {
-    Angle theta = mThetaArr - 0.5*mSens*mAccMax*pow((mDateArr-iTemps)*0.000001, 2);
+    Angle theta = mThetaArr - 0.5*mSens*mAccMax*pow((mDateArr-iTemps), 2);
     return (theta-iTheta).versFloat();
   }
   else
@@ -161,30 +160,28 @@ Droite::~Droite(){}
 
 double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
-  iTemps = iTemps - mDateDep;
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
-
-  if(iTemps<0)
+  if(iTemps<mDateDep)
   {
     double vecteurX = cos(iTheta.versFloat());
     double vecteurY = sin(iTheta.versFloat());
     projeteX = (mDepart[X]-iX)*vecteurX+(mDepart[Y]-iY)*vecteurY;
     return projeteX;
   }
-  else if(0<iTemps && iTemps<mDateAcc)
+  else if(mDateDep<iTemps && iTemps<mDateAcc)
   {
-    double x = 0.5*mAccMax*pow((iTemps)*0.000001, 2);
+    double x = 0.5*mAccMax*pow((iTemps - mDateDep), 2);
     return x-projeteX;
   }
   else if(mDateAcc<iTemps && iTemps<mDateDec)
   {
-    double x = mDistAcc + (iTemps-mDateAcc)*0.000001*mVitesseMax;
+    double x = mDistAcc + (iTemps-mDateAcc)*mVitesseMax;
     return x-projeteX;
   }
   else if(mDateDec<iTemps && iTemps<mDateArr)
   {
-    double x = 2*mDistAcc+mDistConst - 0.5*mAccMax*pow((mDateArr-iTemps)*0.000001, 2);
+    double x = 2*mDistAcc+mDistConst - 0.5*mAccMax*pow((mDateArr-iTemps), 2);
     return x-projeteX;
   }
   else
@@ -198,18 +195,17 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 
 double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
-  iTemps = iTemps - mDateDep;
   //La, c'est une simple operation de projection sur la droite de la trajectoire
   double projeteY = -(iX-mDepart[X])*mVecteur[Y]+(iY-mDepart[Y])*mVecteur[X];
   //return 0;
 
-  if(iTemps<0)
+  if(iTemps<mDateDep)
   {
     return (mTheta-iTheta).versFloat();
   }
-  else if(0<iTemps && iTemps<mDateAcc)
+  else if(mDateDep<iTemps && iTemps<mDateAcc)
   {
-    return (Angle(-projeteY)-(iTheta-mTheta)).versFloat()*iTemps*0.000001*mAccMax*10;
+    return (Angle(-projeteY)-(iTheta-mTheta)).versFloat()*(iTemps - mDateDep)*mAccMax*10;
   }
   else if(mDateAcc<iTemps && iTemps<mDateDec)
   {
@@ -217,7 +213,7 @@ double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
   }
   else if(mDateDec<iTemps && iTemps<mDateArr)
   {
-    return (Angle(-projeteY)-(iTheta-mTheta)).versFloat()*0.000001*(mDateArr-iTemps)*mAccMax*10;
+    return (Angle(-projeteY)-(iTheta-mTheta)).versFloat()*(mDateArr-iTemps)*mAccMax*10;
   }
   else
   {

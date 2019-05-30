@@ -7,8 +7,8 @@
 //=====CONSTANTES NON ROBOT DEPENDANT=====
 
 //Contantes d'asservissement
-#define KI_ROT_SAT 0.05
-#define KI_POS_SAT 0.05
+#define KI_ROT_SAT 5
+#define KI_POS_SAT 5
 
 //Constantes de tableau
 #define D 0

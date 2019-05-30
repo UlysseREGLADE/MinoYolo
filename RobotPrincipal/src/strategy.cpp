@@ -1,7 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
 using namespace std;
-#define PI 3.15159
+#define PI 3.14159
 
 // Maximum motor speed and acceleration.
 int maxSpeed = 200;
@@ -28,15 +28,15 @@ void Strategy::mainLoop()
 {
 while (true)
 {
-  if(asservissement.trajFinie() && idAction<7)
+  if(asservissement.trajFinie() && idAction<1)
   {
       std::cout<<idAction<<std::endl;
     idAction++;
     delete(asservissement.traj);
-    if(idAction==1)
-      asservissement.traj = new Rotation(0.5, 0, Angle(0), Angle(PI/2), 2,1, obtaintime());
     if(idAction==2)
-      asservissement.traj = new Droite(0.5, 0, 0.5, 0.5, 0.5,1, obtaintime());
+      asservissement.traj = new Rotation(0., 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
+    if(idAction==1)
+      asservissement.traj = new Droite(0.0, 0, 0.5, 0., 0.5,1, obtaintime());
     if(idAction==3)
       asservissement.traj = new Rotation(0.5, 0.5, Angle(PI/2), Angle(PI), 2,1, obtaintime());
     if(idAction==4)

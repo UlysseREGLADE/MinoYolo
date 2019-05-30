@@ -2,9 +2,9 @@
 #include <cmath>
 #include <iostream>
 
-#define PI 3.15159
+#define PI 3.14159
 
-#define MAXSPEED 200
+#define MAXSPEED 400
 
 double gettime()
 {
@@ -24,7 +24,7 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
   std::cout<<"Démarrage du robot"<<std::endl;
     std::cout << "L6470 Stepper motor test." << std::endl;
     std::cout << "Requierments: X-NUCLEO-IHM02A1 wired to SPI port 0 of Raspberry Pi." << std::endl;
-int maxAcceleration = 200;
+int maxAcceleration = 800;
 
 // Motor current input value.
 // These are the default value of the L6470.
@@ -54,18 +54,18 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
   theta=m_thetaInit;
 
   uCData donneesCapteur = uCListener_getData();
-  incAvantD=donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
+  incAvantD=donneesCapteur.encoderValues[0];
   incAvantG=donneesCapteur.encoderValues[1];
   tempsAvant = 0;
   traj = new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5, gettime());
   //=====CONSTANTES ROBOT DEPENDANT=====
       K_INC = 0.00722;
       LARGEUR = 0.195;
-      COEFF_ERREUR_ROT_P = 1200;
-      COEFF_ERREUR_ROT_I = 800;
+      COEFF_ERREUR_ROT_P = 400;
+      COEFF_ERREUR_ROT_I = 20;
       COEFF_ERREUR_ROT_D = 0;
-      COEFF_ERREUR_POS_P = 12000;
-      COEFF_ERREUR_POS_I = 30000;
+      COEFF_ERREUR_POS_P = 2800;
+      COEFF_ERREUR_POS_I = 100;
       COEFF_ERREUR_POS_D = 0;
 }
 
@@ -103,7 +103,6 @@ void Asservissement::actualise()
   erreurPosCour = traj->erreurPos(x, y, theta, temps);
   erreurRotCour = traj->erreurRot(x, y, theta, temps);
 
-
   //Calcul du PID sur la trajectoire
   erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant));
   erreurPos[P] = erreurPosCour;
@@ -123,28 +122,29 @@ void Asservissement::actualise()
   
   if(!traj->marcheArriere())
   {
-    double consigneD = +consigneP-consigneR; //TODO vérifier D G
-    double consigneG = +consigneP+consigneR;
+    double consigneD = +consigneP+consigneR;
+    double consigneG = +consigneP-consigneR;
     if(fabs(consigneD)>MAXSPEED)
       consigneD=consigneD*MAXSPEED/fabs(consigneD);
     if(fabs(consigneG)>MAXSPEED)
       consigneG=consigneG*MAXSPEED/fabs(consigneG);
     std::vector<double> velocities;
-    velocities.push_back(+consigneG);
-    velocities.push_back(+consigneD);
+    velocities.push_back(consigneG);
+    velocities.push_back(consigneD);
+std::cout<<consigneG<<" "<<erreurPosCour<<std::endl;
     stepperMotors.setSpeed(velocities);
   }
   else
   {
-    double consigneD = -consigneP-consigneR; //TODO vérifier D G
-    double consigneG = -consigneP+consigneR;
+    double consigneD = -consigneP+consigneR;
+    double consigneG = -consigneP-consigneR;
     if(fabs(consigneD)>MAXSPEED)
       consigneD=consigneD*MAXSPEED/fabs(consigneD);
     if(fabs(consigneG)>MAXSPEED)
       consigneG=consigneG*MAXSPEED/fabs(consigneG);
     std::vector<double> velocities;
-    velocities.push_back(+consigneG);
-    velocities.push_back(+consigneD);
+    velocities.push_back(consigneG);
+    velocities.push_back(consigneD);
     stepperMotors.setSpeed(velocities);
     theta = theta+Angle(PI);
   }
