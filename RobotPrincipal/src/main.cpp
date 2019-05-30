@@ -13,8 +13,9 @@ int main(int argc, char **argv)
     //RPi_enablePorts();
     while(!hasStarted)
     {
-        usleep(10000);
+        
         //ici coder l'interrupteur
+        usleep(10);
         hasStarted=true;
     }
     if(!uCListener_start("/dev/arduinoUno"))
