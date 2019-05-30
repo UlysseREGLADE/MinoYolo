@@ -20,7 +20,7 @@ Angle::Angle(double iX, double iY)
   double norme = sqrt(pow(iX, 2) + pow(iY, 2));
   // Code pas logique pour des raisons de précisions
   // Voir Ulysse pour plus de détails
-  if(iX!=0 && abs(iY/iX)<1)
+  if(iX!=0 && fabs(iY/iX)<1)
   {
     mAngle = asin(iY/norme);
     if(iX<0)

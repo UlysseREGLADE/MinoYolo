@@ -1,14 +1,36 @@
 #include "asservissement.h"
 #include <cmath>
+#include <iostream>
 
 #define PI 3.15159
 
 #define ROBOT_PRINCIPAL 0
 #define ROBOT_SECONDAIRE 1
 #define ROBOT_TEST 2
+#define MAXSPEED 200
 
 Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit, int const typeRobot)
 {
+  std::cout<<"Démarrage du robot"<<std::endl;
+    std::cout << "L6470 Stepper motor test." << std::endl;
+    std::cout << "Requierments: X-NUCLEO-IHM02A1 wired to SPI port 0 of Raspberry Pi." << std::endl;
+int maxAcceleration = 200;
+
+// Motor current input value.
+// These are the default value of the L6470.
+const int MOTOR_KVAL_HOLD = 0x29;
+const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
+    // Init connection with driver.
+    stepperMotors = miam::L6470("/dev/spidev0.0", 2);
+    bool areMotorsInit = stepperMotors.init(MAXSPEED, maxAcceleration, MOTOR_KVAL_HOLD, MOTOR_BEMF[0], MOTOR_BEMF[1], MOTOR_BEMF[2], MOTOR_BEMF[3], false);
+    if(areMotorsInit)
+        std::cout << "Connection with driver successful." << std::endl;
+    else
+    {
+        std::cout << "Failed to communicate with L6470 board" << std::endl;
+        return;
+    }
+
   erreurRot[0] = 0;
   erreurRot[1] = 0;
   erreurRot[2] = 0;
@@ -21,8 +43,9 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
   y=m_yInit;
   theta=m_thetaInit;
 
-  incAvantD=0;
-  incAvantG=0;
+  uCData donneesCapteur = uCListener_getData();
+  incAvantD=donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
+  incAvantG=donneesCapteur.encoderValues[1];
 
   tempsAvant = 0;
 
@@ -69,7 +92,7 @@ Asservissement::~Asservissement()
   
 }
 
-void Asservissement::init(double m_xInit, double m_yInit, Angle m_thetaInit)
+/*void Asservissement::init(double m_xInit, double m_yInit, Angle m_thetaInit)
 {
   x=m_xInit;
   y=m_yInit;
@@ -92,42 +115,21 @@ void Asservissement::init(double m_xInit, double m_yInit, Angle m_thetaInit)
   tempsAvant = 0;
 
   nouvelleTrajectoire(new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5));
-}
+}*/
 
-void Asservissement::actualise(long temps)
+void Asservissement::actualise(double temps)
 {
   //On integre la position du robot
   
-  int NowD = 0;//TODO
-  int NowG = 0;
+  uCData donneesCapteur = uCListener_getData();
+  double NowD = donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
+  double NowG = donneesCapteur.encoderValues[1];
   x += cos(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   y += sin(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   theta = Angle(theta.versFloat() + atan((NowD-NowG-incAvantD+incAvantG)*K_INC/LARGEUR));
   incAvantD = NowD;
   incAvantG = NowG;
 
-
-/*  
-  int capteurD = CapteursInc::d;
-  int capteurG = CapteursInc::g;
-  
-  double d_theta = (capteurD-capteurG-incAvantD+incAvantG)*K_INC/LARGEUR;
-  if(d_theta != 0)
-  {
-    double rayon = (LARGEUR/2)*(capteurD+capteurG-incAvantD-incAvantG)/(capteurD-capteurG-incAvantD+incAvantG);
-    double d_xx = cos(d_theta) - 1;
-    if(abs(capteurD-incAvantD) < abs(capteurG-incAvantG))
-      d_xx = -d_xx;
-    x += cos(theta.versFloat())*rayon*sin(d_theta) - sin(theta.versFloat())*rayon*d_xx;
-    y += sin(theta.versFloat())*rayon*sin(d_theta) + cos(theta.versFloat())*rayon*d_xx;
-    theta = Angle(theta.versFloat()) + d_theta;
-  }
-  else
-  {
-    x += cos(theta.versFloat())*(capteurD+capteurG-incAvantD-incAvantG)*K_INC/2;
-    y += sin(theta.versFloat())*(capteurD+capteurG-incAvantD-incAvantG)*K_INC/2;
-  }
-*/
   
   if(traj->marcheArriere())
  {
@@ -145,29 +147,47 @@ void Asservissement::actualise(long temps)
 
 
   //Calcul du PID sur la trajectoire
-  erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant)*0.000001);
+  erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant));
   erreurPos[P] = erreurPosCour;
-  erreurPos[I] += erreurPos[P]*(temps-tempsAvant)*0.000001;
-  if(abs(erreurPos[I])>KI_POS_SAT)
-    erreurPos[I]=KI_POS_SAT*abs(erreurPos[I])/erreurPos[I];
+  erreurPos[I] += erreurPos[P]*(temps-tempsAvant);
+  if(fabs(erreurPos[I])>KI_POS_SAT)
+    erreurPos[I]=KI_POS_SAT*fabs(erreurPos[I])/erreurPos[I];
 
-  erreurRot[D] = (erreurRotCour-erreurRot[P])/((temps-tempsAvant)*0.000001);
+  erreurRot[D] = (erreurRotCour-erreurRot[P])/((temps-tempsAvant));
   erreurRot[P] = erreurRotCour;
-  erreurRot[I] += erreurRot[P]*(temps-tempsAvant)*0.000001;
-  if(abs(erreurRot[I])>KI_ROT_SAT)
-    erreurRot[I]=KI_ROT_SAT*abs(erreurRot[I])/erreurRot[I];
+  erreurRot[I] += erreurRot[P]*(temps-tempsAvant);
+  if(fabs(erreurRot[I])>KI_ROT_SAT)
+    erreurRot[I]=KI_ROT_SAT*fabs(erreurRot[I])/erreurRot[I];
 
   //Puis on asservit
-  int consigneR = erreurRot[P]*COEFF_ERREUR_ROT_P+erreurRot[I]*COEFF_ERREUR_ROT_I+erreurRot[D]*COEFF_ERREUR_ROT_D;
-  int consigneP = erreurPos[P]*COEFF_ERREUR_POS_P+erreurPos[I]*COEFF_ERREUR_POS_I+erreurPos[D]*COEFF_ERREUR_POS_D;
- 
+  double consigneR = erreurRot[P]*COEFF_ERREUR_ROT_P+erreurRot[I]*COEFF_ERREUR_ROT_I+erreurRot[D]*COEFF_ERREUR_ROT_D;
+  double consigneP = erreurPos[P]*COEFF_ERREUR_POS_P+erreurPos[I]*COEFF_ERREUR_POS_I+erreurPos[D]*COEFF_ERREUR_POS_D;
+  
   if(!traj->marcheArriere())
   {
-    //Moteurs::avancent(+consigneP-consigneR, +consigneP+consigneR); TODO
+    double consigneD = +consigneP-consigneR; //TODO vérifier D G
+    double consigneG = +consigneP+consigneR;
+    if(fabs(consigneD)>MAXSPEED)
+      consigneD=consigneD*MAXSPEED/fabs(consigneD);
+    if(fabs(consigneG)>MAXSPEED)
+      consigneG=consigneG*MAXSPEED/fabs(consigneG);
+    std::vector<double> velocities;
+    velocities.push_back(+consigneD);
+    velocities.push_back(+consigneG);
+    stepperMotors.setSpeed(velocities);
   }
   else
   {
-    //Moteurs::avancent(-consigneP-consigneR, -consigneP+consigneR); TODO
+    double consigneD = -consigneP-consigneR; //TODO vérifier D G
+    double consigneG = -consigneP+consigneR;
+    if(fabs(consigneD)>MAXSPEED)
+      consigneD=consigneD*MAXSPEED/fabs(consigneD);
+    if(fabs(consigneG)>MAXSPEED)
+      consigneG=consigneG*MAXSPEED/fabs(consigneG);
+    std::vector<double> velocities;
+    velocities.push_back(+consigneD);
+    velocities.push_back(+consigneG);
+    stepperMotors.setSpeed(velocities);
     theta = theta+Angle(PI);
   }
 
@@ -198,7 +218,7 @@ void Asservissement::nouvelleTrajectoire(Trajectoire *iTraj)
   traj->commence();
 }
 
-bool Asservissement::trajFinie(long iTemps)
+bool Asservissement::trajFinie(double iTemps)
 {
   return traj->estFinie(iTemps);
 }

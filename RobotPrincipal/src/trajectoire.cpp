@@ -41,7 +41,7 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
   double dureeAcc = mVitesseMax/mAccMax;
   double angleAcc = 0.5*mAccMax*pow(dureeAcc, 2);
-  double angleTot = abs((mThetaArr-mThetaDep).versFloat());
+  double angleTot = fabs((mThetaArr-mThetaDep).versFloat());
 
   if(2*angleAcc>angleTot)
   {

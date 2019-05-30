@@ -19,7 +19,7 @@
 #define MESSAGE_LENGTH 7
 
 // Encoder resolution: ticks to rad.
-const double ENCODER_RESOLUTION = 2 * M_PI / (1024 * 4);
+const double ENCODER_RESOLUTION = 2 * M_PI / (1024);
 
 // Global variables: a uCData struct protected by a mutex.
 std::mutex uCMutex;

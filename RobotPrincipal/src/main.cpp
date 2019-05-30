@@ -27,11 +27,6 @@ int main(int argc, char **argv)
     {
         std::cout<<"échec de démarrage de l'arduino"<<std::endl;
     }
-    while (true)
-    {
-        std::cout<<getTime()<<std::endl;
-    }
-    
     uCData test;
     test = uCListener_getData();
     //std::cout<<test.encoderValues[0]<<std::endl;

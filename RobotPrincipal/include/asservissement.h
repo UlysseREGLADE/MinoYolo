@@ -2,8 +2,8 @@
 #define ASSERVISSEMENT
 
 #include "trajectoire.h"
-//#include "moteurs.h"
-//#include "capteursInc.h"
+#include "uCListener.h"
+#include "MinotaureLib/L6470Driver.h"
 //=====CONSTANTES NON ROBOT DEPENDANT=====
 
 //Contantes d'asservissement
@@ -31,29 +31,30 @@ class Asservissement
     Trajectoire* traj;
 
     //Temps au precedant tour de boucle
-    long tempsAvant;
-    int incAvantD, incAvantG;
+    double tempsAvant;
+    double incAvantD, incAvantG;
 
     double K_INC;
     double LARGEUR;
-    int COEFF_ERREUR_ROT_P;
-    int COEFF_ERREUR_ROT_I;
-    int COEFF_ERREUR_ROT_D;
-    long COEFF_ERREUR_POS_P;
-    long COEFF_ERREUR_POS_I;
-    long COEFF_ERREUR_POS_D;
+    double COEFF_ERREUR_ROT_P;
+    double COEFF_ERREUR_ROT_I;
+    double COEFF_ERREUR_ROT_D;
+    double COEFF_ERREUR_POS_P;
+    double COEFF_ERREUR_POS_I;
+    double COEFF_ERREUR_POS_D;
 
   public:
     Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit, int const typeRobot);
     ~Asservissement();
-
+    
+    miam::L6470 stepperMotors;
     void init(double m_xInit, double m_yInit, Angle m_thetaInit);
-    void actualise(long temps);
+    void actualise(double temps);
 	  double getX();
 	  double getY();
 	  Angle getTheta();
     void nouvelleTrajectoire(Trajectoire *iTraj);
-    bool trajFinie(long iTemps);
+    bool trajFinie(double iTemps);
 
     inline Trajectoire const* getTrajectoireCourante(){return traj;}
 };
