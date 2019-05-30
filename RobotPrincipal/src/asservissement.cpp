@@ -131,7 +131,6 @@ void Asservissement::actualise()
     std::vector<double> velocities;
     velocities.push_back(consigneG);
     velocities.push_back(consigneD);
-std::cout<<consigneG<<" "<<erreurPosCour<<std::endl;
     stepperMotors.setSpeed(velocities);
   }
   else

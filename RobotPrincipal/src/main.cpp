@@ -2,20 +2,19 @@
 #include "strategy.h"
 #include <unistd.h>
 #include <wiringPi.h>
-
-
-
 #include "uCListener.h"
 
 
 int main(int argc, char **argv)
 {
+	wiringPiSetup();
     int pinTirette = 28;
     int pinCote = 27;
     pinMode(pinTirette, INPUT);
     pinMode(pinCote, INPUT);
-    bool hasStarted = false;
+    
     bool coteJaune = false;
+    bool hasStarted = false;
     //RPi_enablePorts();
     while(!hasStarted)
     {
@@ -27,6 +26,24 @@ int main(int argc, char **argv)
         //ici coder l'interrupteur
         usleep(10);
     }
+
+
+
+
+   /* bool hasStarted = false;
+    while(!hasStarted)
+    {
+        usleep(10);
+        hasStarted=true;
+    }*/
+
+
+
+
+
+
+
+
     if(!uCListener_start("/dev/arduinoUno"))
     {
         std::cout<<"échec de démarrage de l'arduino"<<std::endl;
