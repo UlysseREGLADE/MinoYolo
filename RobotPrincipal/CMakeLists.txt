@@ -24,9 +24,11 @@ set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread")
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 # Add directory containing the headers.
 include_directories(include)
+include_directories(include/rplidar)
 
 # Set executable target and link libraries.
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 target_link_libraries(${PROJECT_NAME} pthread)
+target_link_libraries(${PROJECT_NAME} stdc++)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ".")

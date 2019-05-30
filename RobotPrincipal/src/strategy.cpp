@@ -1,5 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
+#include "rplidar.h"
+#include "rplidar_driver.h"
 using namespace std;
 #define PI 3.14159
 
@@ -26,6 +28,51 @@ Strategy::Strategy()
 }
 void Strategy::mainLoop()
 {
+
+    RPlidarDriver lidar = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
+
+    u_result res = lidar->connect("/dev/ttyUSB0", 115200);
+    lidar->startMotor();
+    std::vector<RplidarScanMode> scanModes;
+    lidar->getAllSupportedScanModes(scanModes);
+    lidar->startScanExpress(false, scanModes[0].id);
+    int compteur = 0;
+    int distLimite = 300;
+    int Nlimite = 20;
+
+    while (true)
+    {
+        compteur = 0;
+        rplidar_response_measurement_node_hq_t nodes[8192];
+        size_t nodeCount = sizeof(nodes)/sizeof(rplidar_response_measurement_node_hq_t);
+        res = lidar->grabScanDataHq(nodes, nodeCount);
+        
+        for(int i = 0; i < nodeCount; i++)
+        {
+            float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
+            if(ang >= 325 && ang <= 25)
+            {
+                if(nodes[i].dist_mm_q2 <= distLimite)
+                {
+                    compteur++;
+                }
+            }
+        }
+        if(compteur > Nlimite)
+        {
+            std::cout<<"Obstacle"<<std::endl;
+        }
+        else{
+            std::cout<<"Rien"<<std::endl;
+        }
+    }
+    lidar->stopMotor();
+    lidar->disconnect();
+    RPlidarDriver::DisposeDriver(lidar);
+
+
+
+
 while (true)
 {
   if(asservissement.trajFinie() && idAction<1)
@@ -52,25 +99,5 @@ while (true)
   usleep(100);
 
 }
-    /*std::cout << "Move both motors clockwise." << std::endl;
-    std::vector<int> positions;
-    positions.push_back(200);
-    positions.push_back(200);
-    stepperMotors.moveNSteps(positions);
-    while(stepperMotors.isBusy())
-        usleep(50000);
-    std::cout << "Move motor 1 anti-clockwise." << std::endl;
-    positions[1] = -200;
-    stepperMotors.moveNSteps(positions);
-    while(stepperMotors.isBusy())
-        usleep(50000);
-
-    std::cout << "Move both motors at constant velocity." << std::endl;
-    std::vector<double> velocities;
-    velocities.push_back(maxSpeed);
-    velocities.push_back(maxSpeed);
-    stepperMotors.setSpeed(velocities);
-    usleep(5000000);
-    stepperMotors.softStop();*/
 
 }
