@@ -13,7 +13,7 @@ bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 bool Trajectoire::estFinie(double iTemps)
 {
  // iTemps = iTemps-mDateDep;
-  if(iTemps > mDateArr || mDateArr == 0)
+  if(iTemps > mDateArr + 0.5 || mDateArr == 0)
   {
     return true;
   }

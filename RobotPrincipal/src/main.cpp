@@ -27,13 +27,12 @@ int main(int argc, char **argv)
             coteJaune = digitalRead(pinCote);
         }
         //ici coder l'interrupteur
-        usleep(1);
+        usleep(10);
     }
     if(coteJaune)
     std::cout<<"cote jaune detecte"<<std::endl;
     else
     std::cout<<"cote violet detecte"<<std::endl;
-    Strategy strategy;
     struct sockaddr_rc addr = { 0 };
     int s, status;
     char dest[18] = "00:14:03:06:58:1A"; //adresse du module bluetooth de dédale
@@ -57,6 +56,10 @@ int main(int argc, char **argv)
 
     close(s);
 
+
+
+
+
     /*bool hasStarted = false;
     while(!hasStarted)
     {
@@ -64,11 +67,21 @@ int main(int argc, char **argv)
         hasStarted=true;
     }*/
 
+
+
+
+
+
+
+
     if(!uCListener_start("/dev/arduinoUno"))
     {
         std::cout<<"échec de démarrage de l'arduino"<<std::endl;
     }
+    //uCData test;
+    //test = uCListener_getData();
 
+    Strategy strategy;
     strategy.mainLoop();
     return 0;
 }

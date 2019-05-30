@@ -80,22 +80,22 @@ compteur = 0;
 
 
 
-  if(asservissement.trajFinie() && idAction<4)
+  if(asservissement.trajFinie() && idAction<5)
   {
     idAction++;
     delete(asservissement.traj);
     if(idAction==1)
-      asservissement.traj = new Droite(0.0, 0, 0.3, 0., 0.5,1, obtaintime());
+      asservissement.traj = new Droite(0.0, 0, 0.3, 0., 0.25,1, obtaintime());
     if(idAction==2)
       asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
     if(idAction==3)
-      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
+      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, 0.25,1, obtaintime());
     if(idAction==4)
-      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, 0.5,1, obtaintime());
+      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
     if(idAction==5)
-      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1, obtaintime());
+      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, 0.25,1, obtaintime());
     if(idAction==6)
-      asservissement.traj = new Droite(0, 0.5, 0, 0, 0.5,1, obtaintime());
+      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1, obtaintime());
     if(idAction==7)
       asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1, obtaintime());
   }
