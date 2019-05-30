@@ -1,8 +1,8 @@
 #include "strategy.h"
 #include "uCListener.h"
 #include "rplidar.h"
-using namespace std;
 #define PI 3.14159
+#define TFINAL 100
 
 using namespace rp::standalone::rplidar;
 
@@ -26,6 +26,7 @@ double obtaintime()
 Strategy::Strategy()
 {
     asservissement = Asservissement(0.,0., Angle());
+    tinitial=obtaintime();
 }
 void Strategy::mainLoop()
 {
@@ -42,11 +43,11 @@ void Strategy::mainLoop()
     lidar->getAllSupportedScanModes(scanModes);
     lidar->startScanExpress(false, scanModes[0].id);
     int compteur = 0;
-    int distLimite = 500;
-    int Nlimite = 8;
+    int distLimite = 1500;
+    int Nlimite = 6;
 
 int obstacles=0;
-while (idAction!=8)
+while (obtaintime()-tinitial<TFINAL)
 {
 compteur = 0;
         rplidar_response_measurement_node_hq_t nodes[8192];
@@ -58,7 +59,7 @@ compteur = 0;
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
             if(ang >= 55 && ang <= 125)
             {
-                if(nodes[i].dist_mm_q2 <= distLimite)
+                if(nodes[i].dist_mm_q2 <= distLimite&&nodes[i].dist_mm_q2>300)
                 {
                     compteur++;
                 }
@@ -68,19 +69,19 @@ compteur = 0;
         {
             std::cout<<"Obstacle"<<std::endl;
             obstacles++;
-            if (obstacles>5)
+            if (obstacles>3)
             {
-              idAction=8;
+              idAction=8;//TODO arrêter le temps
             }
         }
         else{
-            std::cout<<"Rien"<<std::endl;
+            //std::cout<<"Rien"<<std::endl;
             obstacles=0;
         }
 
 
 
-  if(asservissement.trajFinie() && idAction<1)
+  if(asservissement.trajFinie() && idAction<1)//TODO
   {
     idAction++;
     delete(asservissement.traj);
@@ -100,17 +101,17 @@ compteur = 0;
       asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1, obtaintime());
   }
   asservissement.actualise();
-  usleep(100);
+  usleep(1);
 
 }
     asservissement.stop();
-      lidar->stopMotor();
-        lidar->disconnect();
+    lidar->stopMotor();
+    lidar->disconnect();
     }
     else
     {
-        
+      std::cout<<("lidar failed")std::<<endl;
     }
-        RPlidarDriver::DisposeDriver(lidar);
+    RPlidarDriver::DisposeDriver(lidar);
 
 }
