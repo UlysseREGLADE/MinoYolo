@@ -55,6 +55,7 @@ class Asservissement
 	  Angle getTheta();
     void nouvelleTrajectoire(Trajectoire *iTraj);
     bool trajFinie();
+    void stop();
 
     inline Trajectoire const* getTrajectoireCourante(){return traj;}
 };

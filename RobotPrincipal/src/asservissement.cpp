@@ -74,6 +74,14 @@ Asservissement::~Asservissement()
   
 }
 
+void Asservissement::stop()
+{
+std::vector<double> velocities;
+    velocities.push_back(0);
+    velocities.push_back(0);
+    stepperMotors.setSpeed(velocities);
+}
+
 void Asservissement::actualise()
 {
   //On integre la position du robot

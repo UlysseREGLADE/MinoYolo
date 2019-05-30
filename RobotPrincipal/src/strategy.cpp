@@ -38,12 +38,50 @@ void Strategy::mainLoop()
     {
             lidar->startMotor();
 
+  std::vector<RplidarScanMode> scanModes;
+    lidar->getAllSupportedScanModes(scanModes);
+    lidar->startScanExpress(false, scanModes[0].id);
+    int compteur = 0;
+    int distLimite = 500;
+    int Nlimite = 8;
 
-while (true)
+int obstacles=0;
+while (idAction!=8)
 {
+compteur = 0;
+        rplidar_response_measurement_node_hq_t nodes[8192];
+        size_t nodeCount = sizeof(nodes)/sizeof(rplidar_response_measurement_node_hq_t);
+        res = lidar->grabScanDataHq(nodes, nodeCount);
+        
+        for(int i = 0; i < nodeCount; i++)
+        {
+            float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
+            if(ang >= 55 && ang <= 125)
+            {
+                if(nodes[i].dist_mm_q2 <= distLimite)
+                {
+                    compteur++;
+                }
+            }
+        }
+        if(compteur > Nlimite)
+        {
+            std::cout<<"Obstacle"<<std::endl;
+            obstacles++;
+            if (obstacles>5)
+            {
+              idAction=8;
+            }
+        }
+        else{
+            std::cout<<"Rien"<<std::endl;
+            obstacles=0;
+        }
+
+
+
   if(asservissement.trajFinie() && idAction<1)
   {
-      std::cout<<idAction<<std::endl;
     idAction++;
     delete(asservissement.traj);
     if(idAction==2)
@@ -65,6 +103,7 @@ while (true)
   usleep(100);
 
 }
+    asservissement.stop();
       lidar->stopMotor();
         lidar->disconnect();
     }
