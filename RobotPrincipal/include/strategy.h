@@ -20,7 +20,7 @@ class Strategy
         double tinitial;
         RPlidarDriver* lidar;
         u_result res;
-        bool lidarplanté;
+        bool lidarOK;
     };
 
 #endif

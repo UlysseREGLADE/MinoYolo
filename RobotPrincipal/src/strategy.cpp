@@ -33,12 +33,12 @@ Strategy::Strategy()
     if (IS_OK(res))
     {
     lidar->startMotor();
-    lidarplanté=false;
+    lidarOK=true;
     }
     else
     {
       std::cout<<"Lidar échoué"<<std::endl;
-      lidarplanté=true;
+      lidarOK=false;
     }
 
 }
@@ -50,7 +50,7 @@ tinitial = obtaintime();
 
 void Strategy::mainLoop()
 {
-  if(!lidarplanté)
+  if(lidarOK)
   {
   std::vector<RplidarScanMode> scanModes;
     lidar->getAllSupportedScanModes(scanModes);
@@ -66,7 +66,7 @@ int obstacles=0;
 while (obtaintime()-tinitial<KILLTIME)
 {
 compteur = 0;
-  if(!lidarplanté)
+  if(lidarOK)
   {
         rplidar_response_measurement_node_hq_t nodes[8192];
         size_t nodeCount = sizeof(nodes)/sizeof(rplidar_response_measurement_node_hq_t);
