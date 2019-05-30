@@ -9,7 +9,13 @@
 #define ROBOT_TEST 2
 #define MAXSPEED 200
 
-Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit, int const typeRobot)
+Asservissement::Asservissement()
+{
+std::cout<<"vide"<<std::endl;
+  
+}
+
+Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit)
 {
   std::cout<<"Démarrage du robot"<<std::endl;
     std::cout << "L6470 Stepper motor test." << std::endl;
@@ -28,7 +34,7 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
     else
     {
         std::cout << "Failed to communicate with L6470 board" << std::endl;
-        return;
+        //return;
     }
 
   erreurRot[0] = 0;
@@ -46,13 +52,10 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
   uCData donneesCapteur = uCListener_getData();
   incAvantD=donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
   incAvantG=donneesCapteur.encoderValues[1];
-
   tempsAvant = 0;
-
+  traj = new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5);
+  traj ->commence();
   //=====CONSTANTES ROBOT DEPENDANT=====
-  switch(typeRobot) //TODO
-  {
-    case ROBOT_PRINCIPAL :
       K_INC = 0.0000905052;
       LARGEUR = 0.206;
       COEFF_ERREUR_ROT_P = 1200;
@@ -61,30 +64,6 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
       COEFF_ERREUR_POS_P = 12000;
       COEFF_ERREUR_POS_I = 30000;
       COEFF_ERREUR_POS_D = 2000;
-      break;
-    case ROBOT_SECONDAIRE :
-      K_INC = 0.0000905052;
-      LARGEUR = 0.220 ;
-      COEFF_ERREUR_ROT_P = 1200;
-      COEFF_ERREUR_ROT_I = 800;
-      COEFF_ERREUR_ROT_D = 70;
-      COEFF_ERREUR_POS_P = 12000;
-      COEFF_ERREUR_POS_I = 3000;
-      COEFF_ERREUR_POS_D = 1300;
-      break;
-    case ROBOT_TEST :
-      K_INC = 0.000268;
-      LARGEUR = 0.315;
-      COEFF_ERREUR_ROT_P = 600;
-      COEFF_ERREUR_ROT_I = 400;
-      COEFF_ERREUR_ROT_D = 70;
-      COEFF_ERREUR_POS_P = 5000;
-      COEFF_ERREUR_POS_I = 1000;
-      COEFF_ERREUR_POS_D = 600;
-      break;
-    default :
-      break;
-  }
 }
 
 Asservissement::~Asservissement()
@@ -108,12 +87,12 @@ Asservissement::~Asservissement()
 
   incAvantD=0;
   incAvantG=0;
-
-  //CapteursInc::d = 0;
-  //CapteursInc::g = 0;
-
-  tempsAvant = 0;
-
+std::cout << "Failed to communicate with L6470 board" << std::endl;
+std::cout << "Failed to communicate with L6470 board" << std::endl;
+std::cout << "Failed to communicate with L6470 board" << std::endl;
+std::cout << "Failed to communicate with L6470 board" << std::endl;
+std::cout << "Failed to communicate with L6470 board" << std::endl;
+std::cout << "Failed to communicate with L6470 board" << std::endl;
   nouvelleTrajectoire(new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5));
 }*/
 

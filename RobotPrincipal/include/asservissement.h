@@ -27,9 +27,6 @@ class Asservissement
     double erreurPos[3];
     int consigneP, consigneR;
 
-    //Trajectoire courrante du robot
-    Trajectoire* traj;
-
     //Temps au precedant tour de boucle
     double tempsAvant;
     double incAvantD, incAvantG;
@@ -44,11 +41,14 @@ class Asservissement
     double COEFF_ERREUR_POS_D;
 
   public:
-    Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit, int const typeRobot);
+    Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit);
+    Asservissement();
     ~Asservissement();
-    
+
     miam::L6470 stepperMotors;
-    void init(double m_xInit, double m_yInit, Angle m_thetaInit);
+    //void init(double m_xInit, double m_yInit, Angle m_thetaInit);
+        //Trajectoire courrante du robot
+    Trajectoire* traj;
     void actualise(double temps);
 	  double getX();
 	  double getY();

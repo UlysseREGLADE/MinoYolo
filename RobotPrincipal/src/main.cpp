@@ -3,8 +3,6 @@
 #include <unistd.h>
 #include "uCListener.h"
 
-Strategy strategy;
-
 double getTime()
 {
     struct timespec currentTime;  
@@ -30,6 +28,7 @@ int main(int argc, char **argv)
     uCData test;
     test = uCListener_getData();
     //std::cout<<test.encoderValues[0]<<std::endl;
+    Strategy strategy;
     strategy.mainLoop();
     return 0;
 }

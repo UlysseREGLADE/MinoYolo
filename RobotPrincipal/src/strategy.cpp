@@ -1,7 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
 using namespace std;
-
+#define PI 3.15159
 
 // Maximum motor speed and acceleration.
 int maxSpeed = 200;
@@ -12,24 +12,50 @@ int maxAcceleration = 200;
 const int MOTOR_KVAL_HOLD = 0x29;
 const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
 
+double gettime()
+{
+    struct timespec currentTime;  
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);   
+    return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
+}
+
+
+Strategy::Strategy()
+{
+    asservissement = Asservissement(0.,0., Angle());
+}
 void Strategy::mainLoop()
 {
-    cout<<"Démarrage du robot"<<endl;
-    std::cout << "L6470 Stepper motor test." << std::endl;
-    std::cout << "Requierments: X-NUCLEO-IHM02A1 wired to SPI port 0 of Raspberry Pi." << std::endl;
+while (true)
+{
 
-    // Init connection with driver.
-    miam::L6470 stepperMotors("/dev/spidev0.0", 2);
-    bool areMotorsInit = stepperMotors.init(maxSpeed, maxAcceleration, MOTOR_KVAL_HOLD, MOTOR_BEMF[0], MOTOR_BEMF[1], MOTOR_BEMF[2], MOTOR_BEMF[3], false);
-    if(areMotorsInit)
-        std::cout << "Connection with driver successful." << std::endl;
-    else
-    {
-        std::cout << "Failed to communicate with L6470 board" << std::endl;
-        return;
-    }
+  double temps = gettime();
+  if(asservissement.traj->estFinie(temps) && idAction<7)
+  {
+    idAction++;
+    delete(asservissement.traj);
+    if(idAction==1)
+      asservissement.traj = new Rotation(0.5, 0, Angle(0), Angle(PI/2), 2,1);
+    if(idAction==2)
+      asservissement.traj = new Droite(0.5, 0, 0.5, 0.5, 0.5,1);
+    if(idAction==3)
+      asservissement.traj = new Rotation(0.5, 0.5, Angle(PI/2), Angle(PI), 2,1);
+    if(idAction==4)
+      asservissement.traj = new Droite(0.5, 0.5, 0, 0.5, 0.5,1);
+    if(idAction==5)
+      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1);
+    if(idAction==6)
+      asservissement.traj = new Droite(0, 0.5, 0, 0, 0.5,1);
+    if(idAction==7)
+      asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1);
+  }
 
-    std::cout << "Move both motors clockwise." << std::endl;
+    std::cout<<idAction<<std::endl;
+  asservissement.actualise(temps);
+  usleep(100);
+
+}
+    /*std::cout << "Move both motors clockwise." << std::endl;
     std::vector<int> positions;
     positions.push_back(200);
     positions.push_back(200);
@@ -48,6 +74,6 @@ void Strategy::mainLoop()
     velocities.push_back(maxSpeed);
     stepperMotors.setSpeed(velocities);
     usleep(5000000);
-    stepperMotors.softStop();
+    stepperMotors.softStop();*/
 
 }
