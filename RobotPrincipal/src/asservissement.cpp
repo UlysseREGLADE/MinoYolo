@@ -3,6 +3,7 @@
 #include <iostream>
 
 #define PI 3.15159
+
 #define MAXSPEED 200
 
 double gettime()
@@ -73,7 +74,6 @@ Asservissement::~Asservissement()
   
 }
 
-
 void Asservissement::actualise()
 {
   //On integre la position du robot
@@ -84,10 +84,10 @@ void Asservissement::actualise()
   x += cos(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   y += sin(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   theta = Angle(theta.versFloat() + atan((NowD-NowG-incAvantD+incAvantG)*K_INC/LARGEUR));
-  P
-  P
+  incAvantD = NowD;
+  incAvantG = NowG;
 
-  P
+  
   if(traj->marcheArriere())
  {
     theta = theta+Angle(PI);

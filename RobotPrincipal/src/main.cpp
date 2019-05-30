@@ -5,7 +5,6 @@
 
 
 #include "uCListener.h"
-#include "MinotaureLib/L6470Driver.h"
 
 
 int main(int argc, char **argv)
