@@ -49,12 +49,12 @@ class Asservissement
     //void init(double m_xInit, double m_yInit, Angle m_thetaInit);
         //Trajectoire courrante du robot
     Trajectoire* traj;
-    void actualise(double temps);
+    void actualise();
 	  double getX();
 	  double getY();
 	  Angle getTheta();
     void nouvelleTrajectoire(Trajectoire *iTraj);
-    bool trajFinie(double iTemps);
+    bool trajFinie();
 
     inline Trajectoire const* getTrajectoireCourante(){return traj;}
 };

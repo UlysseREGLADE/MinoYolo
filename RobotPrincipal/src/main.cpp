@@ -1,14 +1,11 @@
 #include <iostream>
 #include "strategy.h"
 #include <unistd.h>
-#include "uCListener.h"
 
-double getTime()
-{
-    struct timespec currentTime;  
-    clock_gettime(CLOCK_MONOTONIC, &currentTime);   
-    return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
-}
+
+
+#include "uCListener.h"
+#include "MinotaureLib/L6470Driver.h"
 
 
 int main(int argc, char **argv)
@@ -27,6 +24,10 @@ int main(int argc, char **argv)
     }
     uCData test;
     test = uCListener_getData();
+
+
+
+    
     //std::cout<<test.encoderValues[0]<<std::endl;
     Strategy strategy;
     strategy.mainLoop();

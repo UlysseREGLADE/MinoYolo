@@ -3,11 +3,14 @@
 #include <iostream>
 
 #define PI 3.15159
-
-#define ROBOT_PRINCIPAL 0
-#define ROBOT_SECONDAIRE 1
-#define ROBOT_TEST 2
 #define MAXSPEED 200
+
+double gettime()
+{
+    struct timespec currentTime;  
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);   
+    return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
+}
 
 Asservissement::Asservissement()
 {
@@ -53,17 +56,16 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
   incAvantD=donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
   incAvantG=donneesCapteur.encoderValues[1];
   tempsAvant = 0;
-  traj = new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5);
-  traj ->commence();
+  traj = new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5, gettime());
   //=====CONSTANTES ROBOT DEPENDANT=====
-      K_INC = 0.0000905052;
-      LARGEUR = 0.206;
+      K_INC = 0.00722;
+      LARGEUR = 0.195;
       COEFF_ERREUR_ROT_P = 1200;
       COEFF_ERREUR_ROT_I = 800;
-      COEFF_ERREUR_ROT_D = 70;
+      COEFF_ERREUR_ROT_D = 0;
       COEFF_ERREUR_POS_P = 12000;
       COEFF_ERREUR_POS_I = 30000;
-      COEFF_ERREUR_POS_D = 2000;
+      COEFF_ERREUR_POS_D = 0;
 }
 
 Asservissement::~Asservissement()
@@ -71,45 +73,21 @@ Asservissement::~Asservissement()
   
 }
 
-/*void Asservissement::init(double m_xInit, double m_yInit, Angle m_thetaInit)
-{
-  x=m_xInit;
-  y=m_yInit;
-  theta=m_thetaInit;
 
-  erreurRot[0] = 0;
-  erreurRot[1] = 0;
-  erreurRot[2] = 0;
-  
-  erreurPos[0] = 0;
-  erreurPos[1] = 0;
-  erreurPos[2] = 0;
-
-  incAvantD=0;
-  incAvantG=0;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-std::cout << "Failed to communicate with L6470 board" << std::endl;
-  nouvelleTrajectoire(new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5));
-}*/
-
-void Asservissement::actualise(double temps)
+void Asservissement::actualise()
 {
   //On integre la position du robot
   
   uCData donneesCapteur = uCListener_getData();
-  double NowD = donneesCapteur.encoderValues[0]; //TODO : vérifier 0 et 1 = D G
+  double NowD = donneesCapteur.encoderValues[0];
   double NowG = donneesCapteur.encoderValues[1];
   x += cos(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   y += sin(theta.versFloat())*(NowD+NowG-incAvantD-incAvantG)*K_INC/2;
   theta = Angle(theta.versFloat() + atan((NowD-NowG-incAvantD+incAvantG)*K_INC/LARGEUR));
-  incAvantD = NowD;
-  incAvantG = NowG;
+  P
+  P
 
-  
+  P
   if(traj->marcheArriere())
  {
     theta = theta+Angle(PI);
@@ -121,6 +99,7 @@ void Asservissement::actualise(double temps)
 
 
   //Sinon, on met la consigne des moteurs a zero
+  double temps=gettime();
   erreurPosCour = traj->erreurPos(x, y, theta, temps);
   erreurRotCour = traj->erreurRot(x, y, theta, temps);
 
@@ -151,8 +130,8 @@ void Asservissement::actualise(double temps)
     if(fabs(consigneG)>MAXSPEED)
       consigneG=consigneG*MAXSPEED/fabs(consigneG);
     std::vector<double> velocities;
-    velocities.push_back(+consigneD);
     velocities.push_back(+consigneG);
+    velocities.push_back(+consigneD);
     stepperMotors.setSpeed(velocities);
   }
   else
@@ -164,8 +143,8 @@ void Asservissement::actualise(double temps)
     if(fabs(consigneG)>MAXSPEED)
       consigneG=consigneG*MAXSPEED/fabs(consigneG);
     std::vector<double> velocities;
-    velocities.push_back(+consigneD);
     velocities.push_back(+consigneG);
+    velocities.push_back(+consigneD);
     stepperMotors.setSpeed(velocities);
     theta = theta+Angle(PI);
   }
@@ -194,11 +173,10 @@ void Asservissement::nouvelleTrajectoire(Trajectoire *iTraj)
 {
   delete(traj);
   traj = iTraj;
-  traj->commence();
 }
 
-bool Asservissement::trajFinie(double iTemps)
+bool Asservissement::trajFinie()
 {
-  return traj->estFinie(iTemps);
+  return traj->estFinie(gettime());
 }
 

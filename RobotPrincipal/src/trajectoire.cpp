@@ -1,22 +1,18 @@
 #include "trajectoire.h"
 #include <cmath>
+#include <iostream>
 #define PI 3.15159
 
 
 Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type){mDateDep=0;}
 Trajectoire::~Trajectoire(){}
-double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, long iTemps){return 0;}
-double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, long iTemps){return 0;}
+double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps){return 0;}
+double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps){return 0;}
 bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 
-void Trajectoire::commence()
+bool Trajectoire::estFinie(double iTemps)
 {
-	mDateDep=0;
-}
-
-bool Trajectoire::estFinie(long iTemps)
-{
-  iTemps = iTemps-mDateDep;
+ // iTemps = iTemps-mDateDep;
   if(iTemps > mDateArr || mDateArr == 0)
   {
     return true;
@@ -26,7 +22,7 @@ bool Trajectoire::estFinie(long iTemps)
 }
 
 
-Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax):Trajectoire(ROTATION)
+Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax, double temps):Trajectoire(ROTATION)
 {
   mX = iX;
   mY = iY;
@@ -34,6 +30,7 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
   mThetaArr = iThetaArr;
   mVitesseMax = iVitesseMax;
   mAccMax = iAccMax;
+  mDateDep = temps;
   if((mThetaArr-mThetaDep).versFloat()<0)
     mSens = A_TRIGO;
   else
@@ -50,30 +47,30 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
     mAngleAcc = angleAcc;
     mAngleConst = 0;
-    mDateAcc = 1000000*dureeAcc;
+    mDateAcc = dureeAcc;
     mDateDec = mDateAcc + 0;
-    mDateArr = mDateDec + 1000000*dureeAcc;
+    mDateArr = mDateDec + dureeAcc;
   }
   else
   {
     mAngleAcc = angleAcc;
     mAngleConst = angleTot-2*mAngleAcc;
-    mDateAcc = 1000000*dureeAcc;
-    mDateDec = mDateAcc + 1000000*mAngleConst/mVitesseMax;
-    mDateArr = mDateDec + 1000000*dureeAcc;
+    mDateAcc = dureeAcc;
+    mDateDec = mDateAcc + mAngleConst/mVitesseMax;
+    mDateArr = mDateDec + dureeAcc;
   }
 }
 
 Rotation::~Rotation(){}
 
-double Rotation::erreurPos(double iX, double iY, Angle iTheta, long iTemps)
+double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
   double vecteur[2] = {cos(iTheta.versFloat()), sin(iTheta.versFloat())};
   double projX = (mX-iX)*vecteur[X]+(mY-iY)*vecteur[Y];
   return projX;
 }
 
-double Rotation::erreurRot(double iX, double iY, Angle iTheta, long iTemps)
+double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
   iTemps = iTemps-mDateDep;
   if(iTemps<0)
@@ -104,7 +101,7 @@ double Rotation::erreurRot(double iX, double iY, Angle iTheta, long iTemps)
 
 
 
-Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee,  double iVitesseMax, double iAccMax):Trajectoire(DROITE)
+Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee,  double iVitesseMax, double iAccMax, double temps):Trajectoire(DROITE)
 {
   mVitesseMax = iVitesseMax;
   mAccMax = iAccMax;
@@ -113,6 +110,7 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
   mDepart[Y] = iYDepart;
   mArrivee[X] = iXArrivee;
   mArrivee[Y] = iYArrivee;
+  mDateDep = temps;
 
   if(mVitesseMax < 0)
   {
@@ -144,24 +142,24 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
       mDistAcc = dist/2;
       mDistConst=0;
       dureeAcc = sqrt(2*mDistAcc/mAccMax);
-      mDateAcc = mDateDep + 1000000*dureeAcc;
+      mDateAcc = mDateDep + dureeAcc;
       mDateDec = mDateAcc + 0;
-      mDateArr = mDateDec + 1000000*dureeAcc;
+      mDateArr = mDateDec + dureeAcc;
     }
     else
     {
       mDistAcc = distAcc;
       mDistConst = dist - 2*distAcc;
-      mDateAcc = mDateDep + 1000000*dureeAcc;
-      mDateDec = mDateAcc + 1000000*mDistConst/mVitesseMax;
-      mDateArr = mDateDec + 1000000*dureeAcc;
+      mDateAcc = mDateDep + dureeAcc;
+      mDateDec = mDateAcc + mDistConst/mVitesseMax;
+      mDateArr = mDateDec + dureeAcc;
     }
   }
 }
 
 Droite::~Droite(){}
 
-double Droite::erreurPos(double iX, double iY, Angle iTheta, long iTemps)
+double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
   iTemps = iTemps - mDateDep;
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
@@ -198,7 +196,7 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, long iTemps)
   }
 }
 
-double Droite::erreurRot(double iX, double iY, Angle iTheta, long iTemps)
+double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
   iTemps = iTemps - mDateDep;
   //La, c'est une simple operation de projection sur la droite de la trajectoire

@@ -12,7 +12,7 @@ int maxAcceleration = 200;
 const int MOTOR_KVAL_HOLD = 0x29;
 const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
 
-double gettime()
+double obtaintime()
 {
     struct timespec currentTime;  
     clock_gettime(CLOCK_MONOTONIC, &currentTime);   
@@ -28,30 +28,27 @@ void Strategy::mainLoop()
 {
 while (true)
 {
-
-  double temps = gettime();
-  if(asservissement.traj->estFinie(temps) && idAction<7)
+  if(asservissement.trajFinie() && idAction<7)
   {
+      std::cout<<idAction<<std::endl;
     idAction++;
     delete(asservissement.traj);
     if(idAction==1)
-      asservissement.traj = new Rotation(0.5, 0, Angle(0), Angle(PI/2), 2,1);
+      asservissement.traj = new Rotation(0.5, 0, Angle(0), Angle(PI/2), 2,1, obtaintime());
     if(idAction==2)
-      asservissement.traj = new Droite(0.5, 0, 0.5, 0.5, 0.5,1);
+      asservissement.traj = new Droite(0.5, 0, 0.5, 0.5, 0.5,1, obtaintime());
     if(idAction==3)
-      asservissement.traj = new Rotation(0.5, 0.5, Angle(PI/2), Angle(PI), 2,1);
+      asservissement.traj = new Rotation(0.5, 0.5, Angle(PI/2), Angle(PI), 2,1, obtaintime());
     if(idAction==4)
-      asservissement.traj = new Droite(0.5, 0.5, 0, 0.5, 0.5,1);
+      asservissement.traj = new Droite(0.5, 0.5, 0, 0.5, 0.5,1, obtaintime());
     if(idAction==5)
-      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1);
+      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1, obtaintime());
     if(idAction==6)
-      asservissement.traj = new Droite(0, 0.5, 0, 0, 0.5,1);
+      asservissement.traj = new Droite(0, 0.5, 0, 0, 0.5,1, obtaintime());
     if(idAction==7)
-      asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1);
+      asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1, obtaintime());
   }
-
-    std::cout<<idAction<<std::endl;
-  asservissement.actualise(temps);
+  asservissement.actualise();
   usleep(100);
 
 }

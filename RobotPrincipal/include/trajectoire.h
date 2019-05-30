@@ -14,7 +14,7 @@ enum TypeTrajectoire{INDEFINI, ROTATION, DROITE};
 class Trajectoire
 {
   protected:
-    long long mDateDep, mDateAcc, mDateDec, mDateArr;
+    double mDateDep, mDateAcc, mDateDec, mDateArr;
     bool mMarcheArriere = false;
 
   public:
@@ -24,10 +24,10 @@ class Trajectoire
     Trajectoire(TypeTrajectoire type = INDEFINI);
     virtual ~Trajectoire();
 
-    virtual double erreurPos(double x, double y, Angle theta, long temps);
-    virtual double erreurRot(double x, double y, Angle theta, long temps);
-    void commence();
-    bool estFinie(long temps);
+    virtual double erreurPos(double x, double y, Angle theta, double temps);
+    virtual double erreurRot(double x, double y, Angle theta, double temps);
+    void commence(double t);
+    bool estFinie(double temps);
 
     bool marcheArriere();
 };
@@ -42,11 +42,11 @@ class Rotation : public Trajectoire
     Angle mThetaDep, mThetaArr;
 
   public:
-    Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax);
+    Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax, double temps);
     virtual ~Rotation();
 
-    double erreurPos(double iX, double iY, Angle iTheta, long iTemps);
-    double erreurRot(double iX, double iY, Angle iTheta, long iTemps);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
 };
 
 class Droite : public Trajectoire
@@ -60,11 +60,11 @@ class Droite : public Trajectoire
     double mArrivee[2];
 
   public:
-    Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee, double iVitesseMax, double iAccMax);
+    Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee, double iVitesseMax, double iAccMax, double temps);
     virtual ~Droite();
 
-    double erreurPos(double iX, double iY, Angle iTheta, long iTemps);
-    double erreurRot(double iX, double iY, Angle iTheta, long iTemps);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
 
     inline double getArriveeX(){return mArrivee[X];}
     inline double getArriveeY(){return mArrivee[Y];}
