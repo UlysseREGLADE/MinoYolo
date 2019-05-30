@@ -47,7 +47,7 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
     mAngleAcc = angleAcc;
     mAngleConst = 0;
-    mDateAcc = dureeAcc;
+    mDateAcc = mDateDep + dureeAcc;
     mDateDec = mDateAcc + 0;
     mDateArr = mDateDec + dureeAcc;
   }
@@ -55,10 +55,12 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
   {
     mAngleAcc = angleAcc;
     mAngleConst = angleTot-2*mAngleAcc;
-    mDateAcc = dureeAcc;
+    mDateAcc = mDateDep + dureeAcc;
     mDateDec = mDateAcc + mAngleConst/mVitesseMax;
     mDateArr = mDateDec + dureeAcc;
   }
+  std::cout << "Debut rotation: " << mDateDep << std::endl;
+  std::cout << "Fin rotation: " << mDateArr << std::endl;
 }
 
 Rotation::~Rotation(){}
@@ -104,7 +106,7 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
 {
   mVitesseMax = iVitesseMax;
   mAccMax = iAccMax;
-  mDateDep =  0;
+  mDateDep =  temps;
   mDepart[X] = iXDepart;
   mDepart[Y] = iYDepart;
   mArrivee[X] = iXArrivee;

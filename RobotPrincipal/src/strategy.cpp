@@ -1,8 +1,8 @@
 #include "strategy.h"
 #include "uCListener.h"
 #include "rplidar.h"
+using namespace std;
 #define PI 3.14159
-#define TFINAL 100
 
 using namespace rp::standalone::rplidar;
 
@@ -26,7 +26,6 @@ double obtaintime()
 Strategy::Strategy()
 {
     asservissement = Asservissement(0.,0., Angle());
-    tinitial=obtaintime();
 }
 void Strategy::mainLoop()
 {
@@ -43,11 +42,11 @@ void Strategy::mainLoop()
     lidar->getAllSupportedScanModes(scanModes);
     lidar->startScanExpress(false, scanModes[0].id);
     int compteur = 0;
-    int distLimite = 1500;
-    int Nlimite = 6;
+    int distLimite = 1200;
+    int Nlimite = 8;
 
 int obstacles=0;
-while (obtaintime()-tinitial<TFINAL)
+while (!asservissement.trajFinie() || idAction<1)
 {
 compteur = 0;
         rplidar_response_measurement_node_hq_t nodes[8192];
@@ -57,9 +56,9 @@ compteur = 0;
         for(int i = 0; i < nodeCount; i++)
         {
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
-            if(ang >= 55 && ang <= 125)
+            if(true)
             {
-                if(nodes[i].dist_mm_q2 <= distLimite&&nodes[i].dist_mm_q2>300)
+                if(nodes[i].dist_mm_q2 <= distLimite && nodes[i].dist_mm_q2>300)
                 {
                     compteur++;
                 }
@@ -71,28 +70,28 @@ compteur = 0;
             obstacles++;
             if (obstacles>3)
             {
-              idAction=8;//TODO arrêter le temps
+              idAction=8;
             }
         }
         else{
-            //std::cout<<"Rien"<<std::endl;
+            std::cout<<"Rien"<<std::endl;
             obstacles=0;
         }
 
 
 
-  if(asservissement.trajFinie() && idAction<1)//TODO
+  if(asservissement.trajFinie() && idAction<4)
   {
     idAction++;
     delete(asservissement.traj);
-    if(idAction==2)
-      asservissement.traj = new Rotation(0., 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
     if(idAction==1)
-      asservissement.traj = new Droite(0.0, 0, 0.5, 0., 0.5,1, obtaintime());
+      asservissement.traj = new Droite(0.0, 0, 0.3, 0., 0.5,1, obtaintime());
+    if(idAction==2)
+      asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
     if(idAction==3)
-      asservissement.traj = new Rotation(0.5, 0.5, Angle(PI/2), Angle(PI), 2,1, obtaintime());
+      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
     if(idAction==4)
-      asservissement.traj = new Droite(0.5, 0.5, 0, 0.5, 0.5,1, obtaintime());
+      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, 0.5,1, obtaintime());
     if(idAction==5)
       asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1, obtaintime());
     if(idAction==6)
@@ -101,17 +100,18 @@ compteur = 0;
       asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1, obtaintime());
   }
   asservissement.actualise();
-  usleep(1);
+  usleep(100);
 
 }
     asservissement.stop();
-    lidar->stopMotor();
-    lidar->disconnect();
+      lidar->stopMotor();
+        lidar->disconnect();
     }
     else
     {
-      std::cout<<("lidar failed")std::<<endl;
+        
     }
-    RPlidarDriver::DisposeDriver(lidar);
+        RPlidarDriver::DisposeDriver(lidar);
 
 }
+
