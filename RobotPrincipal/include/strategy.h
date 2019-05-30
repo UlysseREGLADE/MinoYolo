@@ -5,6 +5,9 @@
 #include "MinotaureLib/L6470Driver.h"
 #include <unistd.h>
 #include "asservissement.h"
+#include "rplidar.h"
+
+using namespace rp::standalone::rplidar;    
 
 class Strategy
     {
@@ -17,6 +20,7 @@ class Strategy
         double tinitial;
         RPlidarDriver* lidar;
         u_result res;
+        bool lidarplanté;
     };
 
 #endif

@@ -60,8 +60,6 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
     mDateDec = mDateAcc + mAngleConst/mVitesseMax;
     mDateArr = mDateDec + dureeAcc;
   }
-  std::cout << "Debut rotation: " << mDateDep << std::endl;
-  std::cout << "Fin rotation: " << mDateArr << std::endl;
 }
 
 Rotation::~Rotation(){}

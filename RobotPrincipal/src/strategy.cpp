@@ -1,10 +1,10 @@
 #include "strategy.h"
 #include "uCListener.h"
-#include "rplidar.h"
 #define PI 3.14159
 #define KILLTIME 100
+#define iVMAX 0.25
+#define iACCMAX 1
 
-using namespace rp::standalone::rplidar;
 
 // Maximum motor speed and acceleration.
 int maxSpeed = 200;
@@ -33,10 +33,12 @@ Strategy::Strategy()
     if (IS_OK(res))
     {
     lidar->startMotor();
+    lidarplanté=false;
     }
     else
     {
       std::cout<<"Lidar échoué"<<std::endl;
+      lidarplanté=true;
     }
 
 }
@@ -48,17 +50,24 @@ tinitial = obtaintime();
 
 void Strategy::mainLoop()
 {
+  if(!lidarplanté)
+  {
   std::vector<RplidarScanMode> scanModes;
     lidar->getAllSupportedScanModes(scanModes);
     lidar->startScanExpress(false, scanModes[0].id);
+
+
+  }
     int compteur = 0;
     int distLimite = 1200;
     int Nlimite = 8;
 
 int obstacles=0;
-while (obtaintime()-KILLTIME)
+while (obtaintime()-tinitial<KILLTIME)
 {
 compteur = 0;
+  if(!lidarplanté)
+  {
         rplidar_response_measurement_node_hq_t nodes[8192];
         size_t nodeCount = sizeof(nodes)/sizeof(rplidar_response_measurement_node_hq_t);
         res = lidar->grabScanDataHq(nodes, nodeCount);
@@ -80,13 +89,15 @@ compteur = 0;
             obstacles++;
             if (obstacles>3)
             {
-              idAction=8;
+              //TODO coder un évitement
             }
         }
         else{
-            std::cout<<"Rien"<<std::endl;
             obstacles=0;
         }
+
+  }
+
 
 
 
@@ -95,28 +106,24 @@ compteur = 0;
     idAction++;
     delete(asservissement.traj);
     if(idAction==1)
-      asservissement.traj = new Droite(0.0, 0, 0.3, 0., 0.25,1, obtaintime());
+      asservissement.traj = new Droite(0.0, 0, 0.3, 0., iVMAX,iACCMAX, obtaintime());
     if(idAction==2)
       asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
     if(idAction==3)
-      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, 0.25,1, obtaintime());
+      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, iVMAX,iACCMAX, obtaintime());
     if(idAction==4)
       asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
     if(idAction==5)
-      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, 0.25,1, obtaintime());
-    if(idAction==6)
-      asservissement.traj = new Rotation(0, 0.5, Angle(PI), Angle(-PI/2), 2,1, obtaintime());
-    if(idAction==7)
-      asservissement.traj = new Rotation(0, 0, Angle(-PI/2), Angle(0), 2,1, obtaintime());
+      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
   }
   asservissement.actualise();
-  usleep(100);
+  usleep(1);
 
 }
     asservissement.stop();
-      lidar->stopMotor();
-        lidar->disconnect();
-        RPlidarDriver::DisposeDriver(lidar);
+    lidar->stopMotor();
+    lidar->disconnect();
+    RPlidarDriver::DisposeDriver(lidar);
 
 }
 

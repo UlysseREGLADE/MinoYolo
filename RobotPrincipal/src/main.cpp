@@ -18,7 +18,11 @@ int main(int argc, char **argv)
     
     bool coteJaune = false;
     bool hasStarted = false;
-    //RPi_enablePorts();
+
+    if(!uCListener_start("/dev/arduinoUno"))
+    {
+        std::cout<<"échec de démarrage de l'arduino"<<std::endl;
+    }
 
     Strategy strategy;
 
@@ -29,11 +33,10 @@ int main(int argc, char **argv)
             hasStarted=true;
             coteJaune = digitalRead(pinCote);
         }
-        //ici coder l'interrupteur
         else
         usleep(1);
     }
-    strategy.beginTimer()
+    strategy.beginTimer();
     if(coteJaune)
     std::cout<<"cote jaune detecte"<<std::endl;
     else
@@ -41,7 +44,6 @@ int main(int argc, char **argv)
     struct sockaddr_rc addr = { 0 };
     int s, status;
     char dest[18] = "00:14:03:06:58:1A"; //adresse du module bluetooth de dédale
-    //char dest[18] = "58:FB:84:83:AF:E9"; //adresse de mon pc
     // allocate a socket
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
@@ -66,13 +68,6 @@ int main(int argc, char **argv)
         usleep(10);
         hasStarted=true;
     }*/
-
-    if(!uCListener_start("/dev/arduinoUno"))
-    {
-        std::cout<<"échec de démarrage de l'arduino"<<std::endl;
-    }
-    //uCData test;
-    //test = uCListener_getData();
 
     strategy.mainLoop();
     return 0;
