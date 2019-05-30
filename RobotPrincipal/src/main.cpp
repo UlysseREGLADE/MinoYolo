@@ -1,6 +1,7 @@
 #include <iostream>
 #include "strategy.h"
 #include <unistd.h>
+#include <wiringPi.h>
 
 
 
@@ -9,14 +10,22 @@
 
 int main(int argc, char **argv)
 {
+    int pinTirette = 28;
+    int pinCote = 27;
+    pinMode(pinTirette, INPUT);
+    pinMode(pinCote, INPUT);
     bool hasStarted = false;
+    bool coteJaune = false;
     //RPi_enablePorts();
     while(!hasStarted)
     {
-        
+        if(digitalRead(pinTirette))
+        {
+            hasStarted=true;
+            coteJaune = digitalRead(pinCote);
+        }
         //ici coder l'interrupteur
         usleep(10);
-        hasStarted=true;
     }
     if(!uCListener_start("/dev/arduinoUno"))
     {
