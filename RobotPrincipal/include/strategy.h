@@ -15,7 +15,7 @@ class Strategy
         public:
         Asservissement asservissement;
         Strategy();
-        void beginTimer();
+        void beginTimer(bool isJaune);
         void mainLoop();
         int idAction=0;
         double tinitial;
@@ -23,6 +23,7 @@ class Strategy
         u_result res;
         bool lidarOK;
         actions action;
+        bool coteJaune;
     };
 
 #endif

@@ -44,9 +44,10 @@ Strategy::Strategy()
 
 }
 
-void Strategy::beginTimer()
+void Strategy::beginTimer(bool isJaune)
 {
 tinitial = obtaintime();
+coteJaune=isJaune;
 }
 
 void Strategy::mainLoop()
@@ -131,7 +132,7 @@ action.ventouseAvantOff();
     if(idAction==7)
       asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
   }
-lidar->stopMotor();
+//lidar->stopMotor();
   asservissement.actualise(false);
   usleep(1);
 }
