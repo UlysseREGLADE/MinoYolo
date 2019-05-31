@@ -112,7 +112,6 @@ void Asservissement::actualise(bool iIsFreez)
   double temps=gettime();
   erreurPosCour = traj->erreurPos(x, y, theta, temps, iIsFreez);
   erreurRotCour = traj->erreurRot(x, y, theta, temps, iIsFreez);
-
   //Calcul du PID sur la trajectoire
   erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant));
   erreurPos[P] = erreurPosCour;

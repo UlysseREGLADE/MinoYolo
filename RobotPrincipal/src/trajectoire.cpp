@@ -194,8 +194,8 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool
   mLastTime = iTemps;
   iTemps -= mRetard;
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
-if(iIsFreez)
-return 0;
+//if(iIsFreez)
+//return 0;
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
   if(iTemps<mDateDep)
   {

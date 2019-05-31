@@ -61,8 +61,8 @@ void Strategy::mainLoop()
 
   }
     int compteur = 0;
-    int distLimite = 1200;
-    int Nlimite = 8;
+    int distLimite = 1500;
+    int Nlimite = 6;
 
 int obstacles=0;
 while (obtaintime()-tinitial<KILLTIME)
@@ -89,52 +89,64 @@ compteur = 0;
         {
             std::cout<<"Obstacle"<<std::endl;
             obstacles++;
-            if (obstacles>3)
+            if (obstacles==4)
             {
               evitement=true;
+targetX = asservissement.traj->getArriveeX();
+targertY = asservissement.traj->getArriveeY();
+std::cout<<targetX<<std::endl;
+      asservissement.traj = new Attente(100, obtaintime());
+asservissement.stop();
+
             }
         }
-        else{
-            obstacles=0;
-//evitement=false;
+else
+{
+if(obstacles>3)
+{
+std::cout<<"debug"<<std::endl;
+asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targertY, iVMAX,iACCMAX, obtaintime());
+}
+ obstacles=0;
+evitement=false;
         }
 
   }
 
 
-  if(asservissement.trajFinie() && idAction<1)
+  if(asservissement.trajFinie() && idAction<5&&coteJaune)
   {
     idAction++;
     delete(asservissement.traj);
    if(idAction==1)
-	asservissement.traj = new Droite(0.0, 0, 2, 0., 2,2, obtaintime());
-/*if(idAction==1){
-      asservissement.traj = new Attente(1, obtaintime());
-action.sortirVentouse();
-}*/
-    if(idAction==2){
-      asservissement.traj = new Attente(1, obtaintime());
-action.rentrerVentouse();
-    }
-    if(idAction==3){
-      asservissement.traj = new Attente(1, obtaintime());
-action.leverBras();
-    }
-    if(idAction==4){
-      asservissement.traj = new Attente(1, obtaintime());
-action.ventouseAvantOff();
-    }
-    if(idAction==8)
-      asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
+	asservissement.traj = new Droite(0.0, 0, 0.4, 0., iVMAX,iACCMAX, obtaintime());
+    if(idAction==2)
+	asservissement.traj = new Rotation(0.4, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
+    if(idAction==3)
+      asservissement.traj = new Droite(0.4, 0, 0.4, 0.3, iVMAX,iACCMAX, obtaintime());
+    if(idAction==4)
+      asservissement.traj = new Rotation(0.4, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
     if(idAction==5)
-      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, iVMAX,iACCMAX, obtaintime());
-    if(idAction==6)
-      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
-    if(idAction==7)
-      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
+      asservissement.traj = new Droite(0.4, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
+  }
+
+  if(asservissement.trajFinie() && idAction<5&&!coteJaune)
+  {
+    idAction++;
+    delete(asservissement.traj);
+   if(idAction==1)
+	asservissement.traj = new Droite(0.0, 0, 0.4, 0., iVMAX,iACCMAX, obtaintime());
+    if(idAction==2)
+	asservissement.traj = new Rotation(0.4, 0, Angle(0), Angle(-PI/2), 2,2, obtaintime());
+    if(idAction==3)
+      asservissement.traj = new Droite(0.4, 0, 0.4, -0.3, iVMAX,iACCMAX, obtaintime());
+    if(idAction==4)
+      asservissement.traj = new Rotation(0.4, -0.3, Angle(-PI/2), Angle(-PI), 2,2, obtaintime());
+    if(idAction==5)
+      asservissement.traj = new Droite(0.4, -0.3, 0, -0.3, iVMAX,iACCMAX, obtaintime());
   }
 //lidar->stopMotor();
-  asservissement.actualise(evitement);
+  asservissement.actualise();
   usleep(1);
 }
     asservissement.stop();

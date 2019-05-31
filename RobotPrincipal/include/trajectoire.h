@@ -19,6 +19,8 @@ class Trajectoire
 
   public:
     const TypeTrajectoire TYPE;
+    virtual inline double getArriveeX(){return 0;}
+    virtual inline double getArriveeY(){return 0;}
 
   public:
     Trajectoire(TypeTrajectoire type = INDEFINI);
@@ -46,7 +48,8 @@ class Rotation : public Trajectoire
   public:
     Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax, double temps);
     virtual ~Rotation();
-
+ inline double getArriveeX(){return 0;}
+ inline double getArriveeY(){return 0;}
     double erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
     double erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
 };
