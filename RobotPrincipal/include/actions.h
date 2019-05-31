@@ -13,6 +13,8 @@ public:
     void ventouseAvantOn();
     void ventouseAvantOff();
     void ventouseArriereOn();
-    void ventouseArriereOff();//...
+    void ventouseArriereOff();
+void sortirVentouse();
+void rentrerVentouse();
     ~actions();
 };

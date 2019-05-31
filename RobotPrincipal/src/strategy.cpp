@@ -100,17 +100,19 @@ compteur = 0;
   }
 
 
-  if(asservissement.trajFinie() && idAction<4)
+  if(asservissement.trajFinie() && idAction<2)
   {
     idAction++;
     delete(asservissement.traj);
-    if(idAction==1)
-asservissement.traj = new Rotation(0., 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
-      //asservissement.traj = new Droite(0.0, 0, 0.8, 0., iVMAX,iACCMAX, obtaintime());
+    /*if(idAction==1)
+	asservissement.traj = new Droite(0.0, 0, 0.8, 0., 2,2, obtaintime());*/
+if(idAction==1){
+      asservissement.traj = new Attente(1, obtaintime());
+action.sortirVentouse();
+}
     if(idAction==2){
       asservissement.traj = new Attente(1, obtaintime());
-action.baisserBras();
-action.ventouseAvantOn();
+action.rentrerVentouse();
     }
     if(idAction==3){
       asservissement.traj = new Attente(1, obtaintime());
@@ -130,7 +132,7 @@ action.ventouseAvantOff();
       asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
   }
 lidar->stopMotor();
-  //asservissement.actualise();
+  asservissement.actualise();
   usleep(1);
 }
     asservissement.stop();

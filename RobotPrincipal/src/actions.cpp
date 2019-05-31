@@ -117,3 +117,13 @@ void actions::claqueDroite()
 {
 	pwmWrite(PIN_BASE +15, 454);
 }
+
+void actions::sortirVentouse()
+{
+	pwmWrite(PIN_BASE +14, 424);
+}
+void actions::rentrerVentouse()
+{
+	pwmWrite(PIN_BASE +14, 220);
+}
+

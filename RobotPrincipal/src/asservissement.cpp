@@ -23,6 +23,7 @@ Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit
   std::cout<<"Démarrage du robot"<<std::endl;
     std::cout << "L6470 Stepper motor test." << std::endl;
     std::cout << "Requierments: X-NUCLEO-IHM02A1 wired to SPI port 0 of Raspberry Pi." << std::endl;
+
 int maxAcceleration = 800;
 
 // Motor current input value.
@@ -76,6 +77,7 @@ Asservissement::~Asservissement()
 
 void Asservissement::stop()
 {
+std::cout<<"stop moteur"<<std::endl;
 std::vector<double> velocities;
     velocities.push_back(0);
     velocities.push_back(0);
