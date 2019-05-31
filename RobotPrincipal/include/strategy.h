@@ -25,6 +25,7 @@ class Strategy
         actions action;
         bool coteJaune;
 	double targetX;
+bool etaitDroite=false;
 double targertY;
 bool evitement=true;
     };

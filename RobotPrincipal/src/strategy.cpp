@@ -62,7 +62,7 @@ void Strategy::mainLoop()
   }
     int compteur = 0;
     int distLimite = 1500;
-    int Nlimite = 6;
+    int Nlimite = 4;
 
 int obstacles=0;
 while (obtaintime()-tinitial<KILLTIME)
@@ -77,7 +77,7 @@ compteur = 0;
         for(int i = 0; i < nodeCount; i++)
         {
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
-            if(true)
+            if(ang>=60 && ang <= 120)
             {
                 if(nodes[i].dist_mm_q2 <= distLimite && nodes[i].dist_mm_q2>300)
                 {
@@ -87,25 +87,27 @@ compteur = 0;
         }
         if(compteur > Nlimite)
         {
-            std::cout<<"Obstacle"<<std::endl;
+            //std::cout<<"Obstacle"<<std::endl;
             obstacles++;
-            if (obstacles==4&&evitement&&asservissement.traj.TYPE==DROITE)
+            if (obstacles==4&&evitement&&asservissement.traj->TYPE==DROITE)
             {
 targetX = asservissement.traj->getArriveeX();
 targertY = asservissement.traj->getArriveeY();
 std::cout<<"évitement"<<std::endl;
-      asservissement.traj = new Attente(100, obtaintime());
 asservissement.stop();
-
+delete(asservissement.traj);
+      asservissement.traj = new Attente(100, obtaintime());
+etaitDroite=true;
             }
         }
 else
 {
-if(obstacles>3)
+if(obstacles>3&&etaitDroite)
 {
-std::cout<<"debug"<<std::endl;
+
 asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targertY, iVMAX,iACCMAX, obtaintime());
 }
+etaitDroite=false;
  obstacles=0;
         }
 
@@ -117,6 +119,10 @@ asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), t
     idAction++;
     delete(asservissement.traj);
    if(idAction==1)
+/*{
+asservissement.traj = new Attente(100, obtaintime());
+action.ventouseAvantOff();
+}*/
 	asservissement.traj = new Droite(0.0, 0, 0.4, 0., iVMAX,iACCMAX, obtaintime());
     if(idAction==2)
 	asservissement.traj = new Rotation(0.4, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
@@ -157,5 +163,4 @@ action.leverBras();
     lidar->disconnect();
     RPlidarDriver::DisposeDriver(lidar);
 }
-
 }
