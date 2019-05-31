@@ -26,7 +26,7 @@ class Strategy
         bool coteJaune;
 	double targetX;
 double targertY;
-bool evitement=false;
+bool evitement=true;
     };
 
 #endif

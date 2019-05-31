@@ -26,10 +26,8 @@ class Trajectoire
     Trajectoire(TypeTrajectoire type = INDEFINI);
     virtual ~Trajectoire();
 
-    double mLastTime, mRetard;
-
-    virtual double erreurPos(double x, double y, Angle theta, double temps, bool iIsFreez);
-    virtual double erreurRot(double x, double y, Angle theta, double temps, bool iIsFreez);
+    virtual double erreurPos(double x, double y, Angle theta, double temps);
+    virtual double erreurRot(double x, double y, Angle theta, double temps);
     void commence(double t);
     bool estFinie(double temps);
 
@@ -50,8 +48,8 @@ class Rotation : public Trajectoire
     virtual ~Rotation();
  inline double getArriveeX(){return 0;}
  inline double getArriveeY(){return 0;}
-    double erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
-    double erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
 };
 
 class Droite : public Trajectoire
@@ -68,8 +66,8 @@ class Droite : public Trajectoire
     Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee, double iVitesseMax, double iAccMax, double temps);
     virtual ~Droite();
 
-    double erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
-    double erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
 
     inline double getArriveeX(){return mArrivee[X];}
     inline double getArriveeY(){return mArrivee[Y];}

@@ -89,12 +89,11 @@ compteur = 0;
         {
             std::cout<<"Obstacle"<<std::endl;
             obstacles++;
-            if (obstacles==4)
+            if (obstacles==4&&evitement&&asservissement.traj.TYPE==DROITE)
             {
-              evitement=true;
 targetX = asservissement.traj->getArriveeX();
 targertY = asservissement.traj->getArriveeY();
-std::cout<<targetX<<std::endl;
+std::cout<<"évitement"<<std::endl;
       asservissement.traj = new Attente(100, obtaintime());
 asservissement.stop();
 
@@ -108,7 +107,6 @@ std::cout<<"debug"<<std::endl;
 asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targertY, iVMAX,iACCMAX, obtaintime());
 }
  obstacles=0;
-evitement=false;
         }
 
   }

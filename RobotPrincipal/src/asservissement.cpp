@@ -84,7 +84,7 @@ std::vector<double> velocities;
     stepperMotors.setSpeed(velocities);
 }
 
-void Asservissement::actualise(bool iIsFreez)
+void Asservissement::actualise()
 {
   //On integre la position du robot
 
@@ -110,8 +110,8 @@ void Asservissement::actualise(bool iIsFreez)
 
   //Sinon, on met la consigne des moteurs a zero
   double temps=gettime();
-  erreurPosCour = traj->erreurPos(x, y, theta, temps, iIsFreez);
-  erreurRotCour = traj->erreurRot(x, y, theta, temps, iIsFreez);
+  erreurPosCour = traj->erreurPos(x, y, theta, temps);
+  erreurRotCour = traj->erreurRot(x, y, theta, temps);
   //Calcul du PID sur la trajectoire
   erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant));
   erreurPos[P] = erreurPosCour;

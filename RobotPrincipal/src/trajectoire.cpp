@@ -15,12 +15,10 @@ double gettimetraj()
 Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type)
 {
   mDateDep=0;
-  mRetard=0;
-  mLastTime = gettimetraj();
 }
 Trajectoire::~Trajectoire(){}
-double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez){return 0;}
-double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez){return 0;}
+double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps){return 0;}
+double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps){return 0;}
 bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 
 bool Trajectoire::estFinie(double iTemps)
@@ -76,28 +74,15 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
 Rotation::~Rotation(){}
 
-double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
+double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
-  if(iIsFreez)
-  {
-    mRetard += iTemps - mLastTime;
-  }
-  mLastTime = iTemps;
-  iTemps -= mRetard;
   double vecteur[2] = {cos(iTheta.versFloat()), sin(iTheta.versFloat())};
   double projX = (mX-iX)*vecteur[X]+(mY-iY)*vecteur[Y];
   return projX;
 }
 
-double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
+double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
-  if(iIsFreez)
-  {
-    mRetard += iTemps - mLastTime;
-  }
-  mLastTime = iTemps;
-  iTemps -= mRetard;
-
 
   if(iTemps<mDateDep)
   {
@@ -185,17 +170,9 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
 
 Droite::~Droite(){}
 
-double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
+double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
-  if(iIsFreez)
-  {
-    mRetard += iTemps - mLastTime;
-  }
-  mLastTime = iTemps;
-  iTemps -= mRetard;
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
-//if(iIsFreez)
-//return 0;
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
   if(iTemps<mDateDep)
   {
@@ -228,16 +205,8 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool
   }
 }
 
-double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
+double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
 {
-  if(iIsFreez)
-  {
-    mRetard += iTemps - mLastTime;
-  }
-  mLastTime = iTemps;
-  iTemps -= mRetard;
-if(iIsFreez)
-return 0;
   //La, c'est une simple operation de projection sur la droite de la trajectoire
   double projeteY = -(iX-mDepart[X])*mVecteur[Y]+(iY-mDepart[Y])*mVecteur[X];
   //return 0;
