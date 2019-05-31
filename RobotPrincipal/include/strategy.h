@@ -28,7 +28,8 @@ class Strategy
         double targertY;
         bool evitement=false;
 
-        Droite * SimpleDroite(double x_arr, double y_arr);
+        Droite * SimpleForward(double x_arr, double y_arr);
+        Droite * Strategy::SimpleBackward(double x_arr, double y_arr);
         Rotation * SimpleRotation(Angle theta_arr);
     };
 
