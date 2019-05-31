@@ -221,3 +221,10 @@ double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
     return (mTheta-iTheta).versFloat();
   }
 }
+
+Attente::Attente(double attente, double temps):Trajectoire(ATTENTE)
+{
+  mDateArr=temps+attente;
+}
+
+Attente::~Attente(){}

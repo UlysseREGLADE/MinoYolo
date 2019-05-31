@@ -8,7 +8,7 @@ set(PROJECT_DESCRIPTION "Code for the main robot for Eurobot")
 set(CMAKE_CXX_COMPILER "g++")
 
 # Set C++ compiler flags.
-set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread -lm -lwiringPiPca9685")
 
 # Use pkg-config to find external libraries : Glib (compiled for arm) and BBBEurobot.
 # find_package(PkgConfig REQUIRED)

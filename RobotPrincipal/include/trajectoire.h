@@ -9,7 +9,7 @@
 #define TRIGO 1
 #define A_TRIGO -1
 
-enum TypeTrajectoire{INDEFINI, ROTATION, DROITE};
+enum TypeTrajectoire{INDEFINI, ROTATION, DROITE, ATTENTE};
 
 class Trajectoire
 {
@@ -68,6 +68,14 @@ class Droite : public Trajectoire
 
     inline double getArriveeX(){return mArrivee[X];}
     inline double getArriveeY(){return mArrivee[Y];}
+};
+
+class Attente : public Trajectoire
+{
+
+  public:
+    Attente(double attente, double temps);
+    virtual ~Attente();
 };
 
 #endif

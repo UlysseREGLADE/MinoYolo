@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "asservissement.h"
 #include "rplidar.h"
+#include "actions.h"
 
 using namespace rp::standalone::rplidar;    
 
@@ -21,6 +22,7 @@ class Strategy
         RPlidarDriver* lidar;
         u_result res;
         bool lidarOK;
+        actions action;
     };
 
 #endif
