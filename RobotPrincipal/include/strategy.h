@@ -8,7 +8,7 @@
 #include "rplidar.h"
 #include "actions.h"
 
-using namespace rp::standalone::rplidar;    
+using namespace rp::standalone::rplidar;
 
 class Strategy
     {
@@ -24,9 +24,12 @@ class Strategy
         bool lidarOK;
         actions action;
         bool coteJaune;
-	double targetX;
-double targertY;
-bool evitement=false;
+      	double targetX;
+        double targertY;
+        bool evitement=false;
+
+        Droite * SimpleDroite(double x_arr, double y_arr);
+        Rotation * SimpleRotation(Angle theta_arr);
     };
 
 #endif
