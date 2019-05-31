@@ -44,6 +44,30 @@ Strategy::Strategy()
 
 }
 
+Droite * Strategy::SimpleForward(double x_arr, double y_arr)
+{
+  double signe = -1;
+  if(coteJaune)
+    signe  = 1;
+  return new Droite(asservissement.getX(), signe*asservissement.getY(), x_arr, signe*y_arr, iVMAX, iACCMAX, obtaintime());
+}
+
+Droite * Strategy::SimpleBackward(double x_arr, double y_arr)
+{
+  double signe = -1;
+  if(coteJaune)
+    signe  = 1;
+  return new Droite(asservissement.getX(), signe*asservissement.getY(), x_arr, signe*y_arr, -iVMAX, iACCMAX, obtaintime());
+}
+
+Rotation * Strategy::SimpleRotation(Angle theta_arr)
+{
+  double signe = -1;
+  if(coteJaune)
+    signe  = 1;
+  return new Rotation(asservissement.getX(), asservissement.getX(), Angle(signe*asservissement.getTheta().versFloat()), theta_arr, 2,2, obtaintime());
+}
+
 void Strategy::beginTimer(bool isJaune)
 {
 tinitial = obtaintime();
