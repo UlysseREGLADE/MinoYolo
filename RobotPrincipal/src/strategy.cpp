@@ -1,7 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
-#define PI 3.14159
-#define KILLTIME 100
+#define PI 3.141592653589793
+#define KILLTIME 80
 #define iVMAX 0.25
 #define iACCMAX 1
 
@@ -44,28 +44,28 @@ Strategy::Strategy()
 
 }
 
-Droite * Strategy::SimpleForward(double x_arr, double y_arr)
+Droite *Strategy::SimpleForward(double x_arr, double y_arr)
 {
   double signe = -1;
   if(coteJaune)
     signe  = 1;
-  return new Droite(asservissement.getX(), signe*asservissement.getY(), x_arr, signe*y_arr, iVMAX, iACCMAX, obtaintime());
+  return new Droite(asservissement.getX(), asservissement.getY(), x_arr, signe*y_arr, iVMAX, iACCMAX, obtaintime());
 }
 
-Droite * Strategy::SimpleBackward(double x_arr, double y_arr)
+Droite *Strategy::SimpleBackward(double x_arr, double y_arr)
 {
   double signe = -1;
   if(coteJaune)
     signe  = 1;
-  return new Droite(asservissement.getX(), signe*asservissement.getY(), x_arr, signe*y_arr, -iVMAX, iACCMAX, obtaintime());
+  return new Droite(asservissement.getX(), asservissement.getY(), x_arr, signe*y_arr, -iVMAX, iACCMAX, obtaintime());
 }
 
-Rotation * Strategy::SimpleRotation(Angle theta_arr)
+Rotation *Strategy::SimpleRotation(double theta_arr)
 {
   double signe = -1;
   if(coteJaune)
     signe  = 1;
-  return new Rotation(asservissement.getX(), asservissement.getX(), Angle(signe*asservissement.getTheta().versFloat()), theta_arr, 2,2, obtaintime());
+  return new Rotation(asservissement.getX(), asservissement.getY(), Angle(asservissement.getTheta()), Angle(signe*theta_arr), 2,2, obtaintime());
 }
 
 void Strategy::beginTimer(bool isJaune)
@@ -101,7 +101,7 @@ compteur = 0;
         for(int i = 0; i < nodeCount; i++)
         {
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
-            if(ang>=60 && ang <= 120)
+            if(ang>=45 && ang <= 135)
             {
                 if(nodes[i].dist_mm_q2 <= distLimite && nodes[i].dist_mm_q2>300)
                 {
@@ -113,69 +113,87 @@ compteur = 0;
         {
             //std::cout<<"Obstacle"<<std::endl;
             obstacles++;
-            if (obstacles==4&&evitement&&asservissement.traj->TYPE==DROITE)
+            /*if (obstacles==4&&evitement&&asservissement.traj->TYPE==DROITE)
             {
 targetX = asservissement.traj->getArriveeX();
-targertY = asservissement.traj->getArriveeY();
+targetY = asservissement.traj->getArriveeY();
 std::cout<<"évitement"<<std::endl;
 asservissement.stop();
 delete(asservissement.traj);
       asservissement.traj = new Attente(100, obtaintime());
 etaitDroite=true;
-            }
+            }*/
         }
 else
 {
-if(obstacles>3&&etaitDroite)
+/*if(obstacles>3&&etaitDroite)
 {
 
-asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targertY, iVMAX,iACCMAX, obtaintime());
-}
+asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targetY, iVMAX,iACCMAX, obtaintime());
+}*/
 etaitDroite=false;
  obstacles=0;
         }
 
   }
-
-
-  if(asservissement.trajFinie() && idAction<5&&coteJaune)
-  {
+if(asservissement.trajFinie() && idAction<12)
+{
     idAction++;
     delete(asservissement.traj);
    if(idAction==1)
-/*{
-asservissement.traj = new Attente(100, obtaintime());
-action.ventouseAvantOff();
-}*/
-	asservissement.traj = new Droite(0.0, 0, 0.4, 0., iVMAX,iACCMAX, obtaintime());
-    if(idAction==2)
-	asservissement.traj = new Rotation(0.4, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
-    if(idAction==3)
-      asservissement.traj = new Droite(0.4, 0, 0.4, 0.3, iVMAX,iACCMAX, obtaintime());
-    if(idAction==4)
-      asservissement.traj = new Rotation(0.4, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
-    if(idAction==5)
-      asservissement.traj = new Droite(0.4, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
+   {
+     //asservissement.traj = new Attente(100, obtaintime());
+asservissement.traj = SimpleForward(0.7,0);
+   }
+   if(idAction==2)
+   {
+asservissement.traj = SimpleRotation(PI/2);
+   }
+      if(idAction==3)
+   {
+  asservissement.traj = SimpleForward(0.7,0.2);
+   }
+      if(idAction==4)
+   {
+  asservissement.traj = SimpleRotation(PI);
+   }
+      if(idAction==5)
+   {
+  asservissement.traj = SimpleForward(-0.1,0.2);
+   }
+    if(idAction==6)
+   {
+    asservissement.traj = SimpleBackward(0.1,0.2);
+   }
+    if(idAction==7)
+   {
+      asservissement.traj = SimpleRotation(PI/2);
+   }
+    if(idAction==8)
+   {
+    asservissement.traj = SimpleForward(0.1,0.4);
+   }
+    if(idAction==9)
+   {
+    asservissement.traj = SimpleRotation(PI);
+   }
+    if(idAction==10)
+   {
+        asservissement.traj = SimpleForward(-0.1,0.4);
+   }
+    if(idAction==11)
+   {
+    asservissement.traj = SimpleRotation(-PI/2);
+   }
+    if(idAction==12)
+   {
+        asservissement.traj = SimpleForward(-0.1,0);
+   }
   }
 
-  if(asservissement.trajFinie() && idAction<5&&!coteJaune)
-  {
-    idAction++;
-    delete(asservissement.traj);
-   if(idAction==1)
-	asservissement.traj = new Droite(0.0, 0, 0.4, 0., iVMAX,iACCMAX, obtaintime());
-    if(idAction==2)
-	asservissement.traj = new Rotation(0.4, 0, Angle(0), Angle(-PI/2), 2,2, obtaintime());
-    if(idAction==3)
-      asservissement.traj = new Droite(0.4, 0, 0.4, -0.3, iVMAX,iACCMAX, obtaintime());
-    if(idAction==4)
-      asservissement.traj = new Rotation(0.4, -0.3, Angle(-PI/2), Angle(-PI), 2,2, obtaintime());
-    if(idAction==5)
-      asservissement.traj = new Droite(0.4, -0.3, 0, -0.3, iVMAX,iACCMAX, obtaintime());
-  }
 //lidar->stopMotor();
   asservissement.actualise();
-  usleep(1);
+  //usleep(1);
 }
     asservissement.stop();
 if(lidarOK)
@@ -188,3 +206,4 @@ action.leverBras();
     RPlidarDriver::DisposeDriver(lidar);
 }
 }
+

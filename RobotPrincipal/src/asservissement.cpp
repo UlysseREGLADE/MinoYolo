@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 
-#define PI 3.14159
+#define PI 3.141592653589793
 
 #define MAXSPEED 400
 
@@ -41,7 +41,6 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
         //return;
     }
 
-
   erreurRot[0] = 0;
   erreurRot[1] = 0;
   erreurRot[2] = 0;
@@ -60,8 +59,8 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
   tempsAvant = 0;
   traj = new Rotation(x, y, Angle(theta), Angle(theta), 0.5,0.5, gettime());
   //=====CONSTANTES ROBOT DEPENDANT=====
-      K_INC = 0.00722;
-      LARGEUR = 0.195;
+      K_INC = 0.00728;
+      LARGEUR = 0.194;
       COEFF_ERREUR_ROT_P = 400;
       COEFF_ERREUR_ROT_I = 20;
       COEFF_ERREUR_ROT_D = 0;
@@ -72,16 +71,12 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
 
 Asservissement::~Asservissement()
 {
-
 }
 
 void Asservissement::stop()
 {
 std::cout<<"stop moteur"<<std::endl;
-std::vector<double> velocities;
-    velocities.push_back(0);
-    velocities.push_back(0);
-    stepperMotors.setSpeed(velocities);
+    stepperMotors.hardStop();
 }
 
 void Asservissement::actualise()
@@ -96,13 +91,17 @@ void Asservissement::actualise()
   theta = Angle(theta.versFloat() + atan((NowD-NowG-incAvantD+incAvantG)*K_INC/LARGEUR));
   incAvantD = NowD;
   incAvantG = NowG;
-
-
+stepperMotors.highZ();
+std::cout<<x<<" "<<y<<" "<<theta.versFloat()<<std::endl;
   if(traj->marcheArriere())
  {
     theta = theta+Angle(PI);
  }
-
+if(traj->TYPE==ATTENTE)
+{
+//stepperMotors.hardStop();
+return;
+}
   //On calcule l'erreur associee a cette position
   double erreurPosCour;
   double erreurRotCour;

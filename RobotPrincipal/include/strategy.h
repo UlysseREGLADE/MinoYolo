@@ -24,17 +24,14 @@ class Strategy
         bool lidarOK;
         actions action;
         bool coteJaune;
-	double targetX;
-bool etaitDroite=false;
-double targertY;
-bool evitement=true;
+        bool etaitDroite=false;
+        bool evitement=true;
       	double targetX;
-        double targertY;
-        bool evitement=false;
+        double targetY;
 
-        Droite * SimpleForward(double x_arr, double y_arr);
-        Droite * Strategy::SimpleBackward(double x_arr, double y_arr);
-        Rotation * SimpleRotation(Angle theta_arr);
+        Droite *SimpleForward(double x_arr, double y_arr);
+        Droite *SimpleBackward(double x_arr, double y_arr);
+        Rotation *SimpleRotation(double theta_arr);
     };
 
 #endif

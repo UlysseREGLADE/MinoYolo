@@ -1,7 +1,7 @@
 #include "trajectoire.h"
 #include <cmath>
 #include <iostream>
-#define PI 3.14159
+#define PI 3.141592653589793
 #define TIMEMARGIN 0.5
 
 double gettimetraj()
