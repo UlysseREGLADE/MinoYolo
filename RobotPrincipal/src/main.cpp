@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         else
         usleep(1);
     }
-    strategy.beginTimer();
+    strategy.beginTimer(coteJaune);
     if(coteJaune)
     std::cout<<"cote jaune detecte"<<std::endl;
     else

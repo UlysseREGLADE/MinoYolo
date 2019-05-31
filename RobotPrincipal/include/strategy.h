@@ -24,6 +24,7 @@ class Strategy
         bool lidarOK;
         actions action;
         bool coteJaune;
+bool evitement=false;
     };
 
 #endif

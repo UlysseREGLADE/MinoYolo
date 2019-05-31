@@ -193,8 +193,9 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool
   }
   mLastTime = iTemps;
   iTemps -= mRetard;
-
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
+if(iIsFreez)
+return 0;
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
   if(iTemps<mDateDep)
   {
@@ -235,7 +236,8 @@ double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool
   }
   mLastTime = iTemps;
   iTemps -= mRetard;
-
+if(iIsFreez)
+return 0;
   //La, c'est une simple operation de projection sur la droite de la trajectoire
   double projeteY = -(iX-mDepart[X])*mVecteur[Y]+(iY-mDepart[Y])*mVecteur[X];
   //return 0;

@@ -91,26 +91,27 @@ compteur = 0;
             obstacles++;
             if (obstacles>3)
             {
-              //TODO coder un évitement
+              evitement=true;
             }
         }
         else{
             obstacles=0;
+//evitement=false;
         }
 
   }
 
 
-  if(asservissement.trajFinie() && idAction<2)
+  if(asservissement.trajFinie() && idAction<1)
   {
     idAction++;
     delete(asservissement.traj);
-    /*if(idAction==1)
-	asservissement.traj = new Droite(0.0, 0, 0.8, 0., 2,2, obtaintime());*/
-if(idAction==1){
+   if(idAction==1)
+	asservissement.traj = new Droite(0.0, 0, 2, 0., 2,2, obtaintime());
+/*if(idAction==1){
       asservissement.traj = new Attente(1, obtaintime());
 action.sortirVentouse();
-}
+}*/
     if(idAction==2){
       asservissement.traj = new Attente(1, obtaintime());
 action.rentrerVentouse();
@@ -133,7 +134,7 @@ action.ventouseAvantOff();
       asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
   }
 //lidar->stopMotor();
-  asservissement.actualise(false);
+  asservissement.actualise(evitement);
   usleep(1);
 }
     asservissement.stop();
