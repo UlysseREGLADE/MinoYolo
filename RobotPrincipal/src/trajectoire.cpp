@@ -19,8 +19,8 @@ Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type)
   mLastTime = gettimetraj();
 }
 Trajectoire::~Trajectoire(){}
-double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees){return 0;}
-double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees){return 0;}
+double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez){return 0;}
+double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez){return 0;}
 bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 
 bool Trajectoire::estFinie(double iTemps)
@@ -78,7 +78,7 @@ Rotation::~Rotation(){}
 
 double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
-  if(iIsFrees)
+  if(iIsFreez)
   {
     mRetard += iTemps - mLastTime;
   }
@@ -91,7 +91,7 @@ double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bo
 
 double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
-  if(iIsFrees)
+  if(iIsFreez)
   {
     mRetard += iTemps - mLastTime;
   }
@@ -185,9 +185,9 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
 
 Droite::~Droite(){}
 
-double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees)
+double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
-  if(iIsFrees)
+  if(iIsFreez)
   {
     mRetard += iTemps - mLastTime;
   }
@@ -227,9 +227,9 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool
   }
 }
 
-double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees)
+double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
-  if(iIsFrees)
+  if(iIsFreez)
   {
     mRetard += iTemps - mLastTime;
   }
