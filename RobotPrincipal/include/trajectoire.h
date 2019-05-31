@@ -47,8 +47,8 @@ class Rotation : public Trajectoire
     Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, double iVitesseMax, double iAccMax, double temps);
     virtual ~Rotation();
 
-    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
-    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
 };
 
 class Droite : public Trajectoire
@@ -65,8 +65,8 @@ class Droite : public Trajectoire
     Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArrivee, double iVitesseMax, double iAccMax, double temps);
     virtual ~Droite();
 
-    double erreurPos(double iX, double iY, Angle iTheta, double iTemps);
-    double erreurRot(double iX, double iY, Angle iTheta, double iTemps);
+    double erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
+    double erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez);
 
     inline double getArriveeX(){return mArrivee[X];}
     inline double getArriveeY(){return mArrivee[Y];}
