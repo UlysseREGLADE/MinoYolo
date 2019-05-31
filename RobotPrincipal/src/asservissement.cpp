@@ -65,7 +65,7 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
       COEFF_ERREUR_ROT_I = 20;
       COEFF_ERREUR_ROT_D = 0;
       COEFF_ERREUR_POS_P = 2800;
-      COEFF_ERREUR_POS_I = 100;
+      COEFF_ERREUR_POS_I = 200;
       COEFF_ERREUR_POS_D = 0;
 }
 
@@ -92,7 +92,7 @@ void Asservissement::actualise()
   incAvantD = NowD;
   incAvantG = NowG;
 stepperMotors.highZ();
-std::cout<<x<<" "<<y<<" "<<theta.versFloat()<<std::endl;
+//std::cout<<x<<" "<<y<<" "<<theta.versFloat()<<std::endl;
   if(traj->marcheArriere())
  {
     theta = theta+Angle(PI);

@@ -3,7 +3,7 @@
 #define PI 3.141592653589793
 #define KILLTIME 80
 #define iVMAX 0.25
-#define iACCMAX 1
+#define iACCMAX 0.25
 
 
 // Maximum motor speed and acceleration.
@@ -65,7 +65,7 @@ Rotation *Strategy::SimpleRotation(double theta_arr)
   double signe = -1;
   if(coteJaune)
     signe  = 1;
-  return new Rotation(asservissement.getX(), asservissement.getY(), Angle(asservissement.getTheta()), Angle(signe*theta_arr), 2,2, obtaintime());
+  return new Rotation(asservissement.getX(), asservissement.getY(), Angle(asservissement.getTheta()), Angle(signe*theta_arr), 1,1, obtaintime());
 }
 
 void Strategy::beginTimer(bool isJaune)
@@ -179,7 +179,7 @@ asservissement.traj = SimpleRotation(PI/2);
    }
     if(idAction==10)
    {
-        asservissement.traj = SimpleForward(-0.1,0.4);
+        asservissement.traj = SimpleForward(-0.2,0.4);
    }
     if(idAction==11)
    {
@@ -187,7 +187,7 @@ asservissement.traj = SimpleRotation(PI/2);
    }
     if(idAction==12)
    {
-        asservissement.traj = SimpleForward(-0.1,0);
+        asservissement.traj = SimpleForward(-0.2,0);
    }
   }
 
@@ -206,4 +206,3 @@ action.leverBras();
     RPlidarDriver::DisposeDriver(lidar);
 }
 }
-

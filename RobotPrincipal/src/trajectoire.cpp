@@ -130,6 +130,7 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
   }
 
   double dist = sqrt(pow(mDepart[X]-mArrivee[X], 2)+pow(mDepart[Y]-mArrivee[Y], 2));
+  mDist = dist;
 
   double dureeAcc = mVitesseMax/mAccMax;
   double distAcc = 0.5*pow(dureeAcc, 2)*mAccMax;
@@ -174,34 +175,39 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
+  //std::cout << projeteX << std::endl;
   if(iTemps<mDateDep)
   {
-    double vecteurX = cos(iTheta.versFloat());
-    double vecteurY = sin(iTheta.versFloat());
-    projeteX = (mDepart[X]-iX)*vecteurX+(mDepart[Y]-iY)*vecteurY;
+    //double vecteurX = cos(iTheta.versFloat());
+    //double vecteurY = sin(iTheta.versFloat());
+    //projeteX = (mDepart[X]-iX)*vecteurX+(mDepart[Y]-iY)*vecteurY;
     return projeteX;
   }
   else if(mDateDep<iTemps && iTemps<mDateAcc)
   {
     double x = 0.5*mAccMax*pow((iTemps - mDateDep), 2);
+    //std::cout << x << std::endl;
     return x-projeteX;
   }
   else if(mDateAcc<iTemps && iTemps<mDateDec)
   {
     double x = mDistAcc + (iTemps-mDateAcc)*mVitesseMax;
+    //std::cout << x << std::endl;
     return x-projeteX;
   }
   else if(mDateDec<iTemps && iTemps<mDateArr)
   {
     double x = 2*mDistAcc+mDistConst - 0.5*mAccMax*pow((mDateArr-iTemps), 2);
+    //std::cout << x << std::endl;
     return x-projeteX;
   }
   else
   {
-    double vecteurX = cos(iTheta.versFloat());
-    double vecteurY = sin(iTheta.versFloat());
-    projeteX = (mArrivee[X]-iX)*vecteurX+(mArrivee[Y]-iY)*vecteurY;
-    return projeteX;
+    //double vecteurX = cos(iTheta.versFloat());
+    //double vecteurY = sin(iTheta.versFloat());
+    //projeteX = (mArrivee[X]-iX)*vecteurX+(mArrivee[Y]-iY)*vecteurY;
+    //std::cout << mDist-projeteX << std::endl;
+    return mDist-projeteX;
   }
 }
 

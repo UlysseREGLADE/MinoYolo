@@ -1,7 +1,7 @@
 #include "angle.h"
 #include <cmath>
 
-#define PI 3.15159
+#define PI 3.14159
 
 Angle::Angle()
 {

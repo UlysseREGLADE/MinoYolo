@@ -8,7 +8,7 @@ set(PROJECT_DESCRIPTION "Code for the main robot for Eurobot")
 set(CMAKE_CXX_COMPILER "g++")
 
 # Set C++ compiler flags.
-set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread -lm -lwiringPiPca9685")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread -lbluetooth -lwiringPi -lwiringPiDev -lm -lwiringPiPca9685")
 
 # Use pkg-config to find external libraries : Glib (compiled for arm) and BBBEurobot.
 # find_package(PkgConfig REQUIRED)
@@ -21,7 +21,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Wno-psabi -fdiagnostics-color -lpthread -lm -lwiring
 #link_directories(${MINOTAURELIB_LIBRARY_DIRS})
 
 # Include source files from src directory.
-file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp" "src/rplidar/*.cpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp" "src/rplidar/*.cpp" "src/*.c")
 # Add directory containing the headers.
 include_directories(include)
 include_directories(include/rplidar)

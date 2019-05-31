@@ -57,7 +57,7 @@ class Droite : public Trajectoire
   private:
     double mVitesseMax, mAccMax;
     double mVecteur[2];
-    double mDistAcc, mDistConst;
+    double mDistAcc, mDistConst, mDist;
     Angle mTheta;
     double mDepart[2];
     double mArrivee[2];
