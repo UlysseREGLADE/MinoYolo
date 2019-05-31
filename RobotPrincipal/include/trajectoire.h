@@ -24,8 +24,10 @@ class Trajectoire
     Trajectoire(TypeTrajectoire type = INDEFINI);
     virtual ~Trajectoire();
 
-    virtual double erreurPos(double x, double y, Angle theta, double temps);
-    virtual double erreurRot(double x, double y, Angle theta, double temps);
+    double mLastTime, mRetard;
+
+    virtual double erreurPos(double x, double y, Angle theta, double temps, bool iIsFreez);
+    virtual double erreurRot(double x, double y, Angle theta, double temps, bool iIsFreez);
     void commence(double t);
     bool estFinie(double temps);
 

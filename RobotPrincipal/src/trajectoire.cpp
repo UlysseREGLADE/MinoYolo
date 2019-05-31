@@ -4,8 +4,20 @@
 #define PI 3.14159
 #define TIMEMARGIN 0.5
 
+double gettimetraj()
+{
+    struct timespec currentTime;
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);
+    return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
+}
 
-Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type){mDateDep=0;}
+
+Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type)
+{
+  mDateDep=0;
+  mRetard=0;
+  mLastTime = gettimetraj();
+}
 Trajectoire::~Trajectoire(){}
 double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps){return 0;}
 double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps){return 0;}
@@ -71,8 +83,16 @@ double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
   return projX;
 }
 
-double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
+double Rotation::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
+  if(iIsFrees)
+  {
+    mRetard += iTemps - mLastTime;
+  }
+  mLastTime = iTemps;
+  iTemps -= mRetard;
+
+
   if(iTemps<mDateDep)
   {
     return (mThetaDep-iTheta).versFloat();
@@ -161,6 +181,13 @@ Droite::~Droite(){}
 
 double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
 {
+  if(iIsFrees)
+  {
+    mRetard += iTemps - mLastTime;
+  }
+  mLastTime = iTemps;
+  iTemps -= mRetard;
+
   //On se place dans la base ou le vecteur x colineaire a la trajectoire
   double projeteX = (iX-mDepart[X])*mVecteur[X]+(iY-mDepart[Y])*mVecteur[Y];
   if(iTemps<mDateDep)

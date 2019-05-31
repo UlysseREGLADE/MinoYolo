@@ -8,14 +8,14 @@
 
 double gettime()
 {
-    struct timespec currentTime;  
-    clock_gettime(CLOCK_MONOTONIC, &currentTime);   
+    struct timespec currentTime;
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);
     return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
 }
 
 Asservissement::Asservissement()
 {
-  
+
 }
 
 Asservissement::Asservissement(double m_xInit, double m_yInit, Angle m_thetaInit)
@@ -45,7 +45,7 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
   erreurRot[0] = 0;
   erreurRot[1] = 0;
   erreurRot[2] = 0;
-  
+
   erreurPos[0] = 0;
   erreurPos[1] = 0;
   erreurPos[2] = 0;
@@ -72,7 +72,7 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
 
 Asservissement::~Asservissement()
 {
-  
+
 }
 
 void Asservissement::stop()
@@ -84,10 +84,10 @@ std::vector<double> velocities;
     stepperMotors.setSpeed(velocities);
 }
 
-void Asservissement::actualise()
+void Asservissement::actualise(bool iIsFreez)
 {
   //On integre la position du robot
-  
+
   uCData donneesCapteur = uCListener_getData();
   double NowD = donneesCapteur.encoderValues[0];
   double NowG = donneesCapteur.encoderValues[1];
@@ -97,7 +97,7 @@ void Asservissement::actualise()
   incAvantD = NowD;
   incAvantG = NowG;
 
-  
+
   if(traj->marcheArriere())
  {
     theta = theta+Angle(PI);
@@ -110,8 +110,8 @@ void Asservissement::actualise()
 
   //Sinon, on met la consigne des moteurs a zero
   double temps=gettime();
-  erreurPosCour = traj->erreurPos(x, y, theta, temps);
-  erreurRotCour = traj->erreurRot(x, y, theta, temps);
+  erreurPosCour = traj->erreurPos(x, y, theta, temps, iIsFreez);
+  erreurRotCour = traj->erreurRot(x, y, theta, temps, iIsFreez);
 
   //Calcul du PID sur la trajectoire
   erreurPos[D] = (erreurPosCour-erreurPos[P])/((temps-tempsAvant));
@@ -129,7 +129,7 @@ void Asservissement::actualise()
   //Puis on asservit
   double consigneR = erreurRot[P]*COEFF_ERREUR_ROT_P+erreurRot[I]*COEFF_ERREUR_ROT_I+erreurRot[D]*COEFF_ERREUR_ROT_D;
   double consigneP = erreurPos[P]*COEFF_ERREUR_POS_P+erreurPos[I]*COEFF_ERREUR_POS_I+erreurPos[D]*COEFF_ERREUR_POS_D;
-  
+
   if(!traj->marcheArriere())
   {
     double consigneD = +consigneP+consigneR;
@@ -188,4 +188,3 @@ bool Asservissement::trajFinie()
 {
   return traj->estFinie(gettime());
 }
-
