@@ -17,8 +17,8 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
 
 double obtaintime()
 {
-    struct timespec currentTime;  
-    clock_gettime(CLOCK_MONOTONIC, &currentTime);   
+    struct timespec currentTime;
+    clock_gettime(CLOCK_MONOTONIC, &currentTime);
     return (double)currentTime.tv_sec + (double)(currentTime.tv_nsec)/1e9;
 }
 
@@ -72,7 +72,7 @@ compteur = 0;
         rplidar_response_measurement_node_hq_t nodes[8192];
         size_t nodeCount = sizeof(nodes)/sizeof(rplidar_response_measurement_node_hq_t);
         res = lidar->grabScanDataHq(nodes, nodeCount);
-        
+
         for(int i = 0; i < nodeCount; i++)
         {
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
@@ -132,7 +132,7 @@ action.ventouseAvantOff();
       asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
   }
 lidar->stopMotor();
-  asservissement.actualise();
+  asservissement.actualise(false);
   usleep(1);
 }
     asservissement.stop();
@@ -147,4 +147,3 @@ action.leverBras();
 }
 
 }
-
