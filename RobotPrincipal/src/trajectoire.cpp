@@ -19,8 +19,8 @@ Trajectoire::Trajectoire(TypeTrajectoire type):TYPE(type)
   mLastTime = gettimetraj();
 }
 Trajectoire::~Trajectoire(){}
-double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps){return 0;}
-double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps){return 0;}
+double Trajectoire::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees){return 0;}
+double Trajectoire::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees){return 0;}
 bool Trajectoire::marcheArriere(){return mMarcheArriere;}
 
 bool Trajectoire::estFinie(double iTemps)
@@ -76,8 +76,14 @@ Rotation::Rotation(double iX, double iY, Angle iThetaDep, Angle iThetaArr, doubl
 
 Rotation::~Rotation(){}
 
-double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
+double Rotation::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFreez)
 {
+  if(iIsFrees)
+  {
+    mRetard += iTemps - mLastTime;
+  }
+  mLastTime = iTemps;
+  iTemps -= mRetard;
   double vecteur[2] = {cos(iTheta.versFloat()), sin(iTheta.versFloat())};
   double projX = (mX-iX)*vecteur[X]+(mY-iY)*vecteur[Y];
   return projX;
@@ -179,7 +185,7 @@ Droite::Droite(double iXDepart, double iYDepart, double iXArrivee, double iYArri
 
 Droite::~Droite(){}
 
-double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
+double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees)
 {
   if(iIsFrees)
   {
@@ -221,8 +227,15 @@ double Droite::erreurPos(double iX, double iY, Angle iTheta, double iTemps)
   }
 }
 
-double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps)
+double Droite::erreurRot(double iX, double iY, Angle iTheta, double iTemps, bool iIsFrees)
 {
+  if(iIsFrees)
+  {
+    mRetard += iTemps - mLastTime;
+  }
+  mLastTime = iTemps;
+  iTemps -= mRetard;
+
   //La, c'est une simple operation de projection sur la droite de la trajectoire
   double projeteY = -(iX-mDepart[X])*mVecteur[Y]+(iY-mDepart[Y])*mVecteur[X];
   //return 0;
