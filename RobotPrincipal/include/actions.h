@@ -8,6 +8,8 @@ public:
     actions();
     void baisserBras();
     void leverBras();
+    void claqueGauche();
+    void claqueDroite();
     void ventouseAvantOn();
     void ventouseAvantOff();
     void ventouseArriereOn();

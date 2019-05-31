@@ -2,12 +2,7 @@
 #define PIN_BASE 300
 #define MAX_PWM 4096
 #define HERTZ 50
-
-int calcTicks(float impulseMs, int hertz)
-{
-	float cycleMs = 1000.0f / hertz;
-	return (int)(MAX_PWM * impulseMs / cycleMs + 0.5f);
-}
+#include <iostream>
 
 float map(float input, float min, float max)
 {
@@ -30,16 +25,12 @@ actions::~actions(){}
 
 void actions::baisserBras()
 {
-    float millis = map(0.14, 1, 2);
-	int	tick = calcTicks(millis, HERTZ);
-		pwmWrite(PIN_BASE , tick);
+	pwmWrite(PIN_BASE , 233);
 }
 
 void actions::leverBras()
 {
-    float millis = map(0.92, 1, 2);
-	int	tick = calcTicks(millis, HERTZ);
-		pwmWrite(PIN_BASE , tick);
+	pwmWrite(PIN_BASE , 393);
 }
 
 void actions::ventouseAvantOn()
@@ -116,4 +107,13 @@ digitalWrite(en, LOW);
 digitalWrite(in1, LOW);
 digitalWrite(in2, LOW);
 digitalWrite(en, LOW);
+}
+
+void actions::claqueGauche()
+{
+	pwmWrite(PIN_BASE +15, 154);
+}
+void actions::claqueDroite()
+{
+	pwmWrite(PIN_BASE +15, 454);
 }

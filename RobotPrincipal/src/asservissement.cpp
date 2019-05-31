@@ -15,7 +15,6 @@ double gettime()
 
 Asservissement::Asservissement()
 {
-std::cout<<"vide"<<std::endl;
   
 }
 
@@ -40,6 +39,7 @@ const int MOTOR_BEMF[4] = {0x29, 0x0408, 0x19, 0x29};
         std::cout << "Failed to communicate with L6470 board" << std::endl;
         //return;
     }
+
 
   erreurRot[0] = 0;
   erreurRot[1] = 0;

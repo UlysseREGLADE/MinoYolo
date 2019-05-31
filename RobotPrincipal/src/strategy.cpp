@@ -1,7 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
 #define PI 3.14159
-#define KILLTIME 10
+#define KILLTIME 100
 #define iVMAX 0.25
 #define iACCMAX 1
 
@@ -100,27 +100,36 @@ compteur = 0;
   }
 
 
-  if(asservissement.trajFinie() && idAction<1)
+  if(asservissement.trajFinie() && idAction<4)
   {
     idAction++;
     delete(asservissement.traj);
     if(idAction==1)
-      asservissement.traj = new Attente(10, obtaintime());
-    /*if(idAction==1)
-      asservissement.traj = new Droite(0.0, 0, 0.3, 0., iVMAX,iACCMAX, obtaintime());
-    if(idAction==2)
-      asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
-    if(idAction==3)
-      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, iVMAX,iACCMAX, obtaintime());
-    if(idAction==4)
-      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
-    if(idAction==5)
-      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());*/
-  }
-
-action.ventouseArriereOn();
+asservissement.traj = new Rotation(0., 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
+      //asservissement.traj = new Droite(0.0, 0, 0.8, 0., iVMAX,iACCMAX, obtaintime());
+    if(idAction==2){
+      asservissement.traj = new Attente(1, obtaintime());
+action.baisserBras();
+action.ventouseAvantOn();
+    }
+    if(idAction==3){
+      asservissement.traj = new Attente(1, obtaintime());
 action.leverBras();
-
+    }
+    if(idAction==4){
+      asservissement.traj = new Attente(1, obtaintime());
+action.ventouseAvantOff();
+    }
+    if(idAction==8)
+      asservissement.traj = new Rotation(0.3, 0, Angle(0), Angle(PI/2), 2,2, obtaintime());
+    if(idAction==5)
+      asservissement.traj = new Droite(0.3, 0, 0.3, 0.3, iVMAX,iACCMAX, obtaintime());
+    if(idAction==6)
+      asservissement.traj = new Rotation(0.3, 0.3, Angle(PI/2), Angle(PI), 2,2, obtaintime());
+    if(idAction==7)
+      asservissement.traj = new Droite(0.3, 0.3, 0, 0.3, iVMAX,iACCMAX, obtaintime());
+  }
+lidar->stopMotor();
   //asservissement.actualise();
   usleep(1);
 }
