@@ -106,7 +106,14 @@ compteur = 0;
         for(int i = 0; i < nodeCount; i++)
         {
             float ang = nodes[i].angle_z_q14* 90.f / (1 << 14); //On convertit en degre
-            if(ang>=35 && ang <= 145)
+            if(ang>=35 && ang <= 145 && ((evitementOn&&!marcheArriere)||(asservissement.traj->TYPE==DROITE &&!asservissement.traj->marcheArriere())))
+            {
+                if(nodes[i].dist_mm_q2 <= distLimite && nodes[i].dist_mm_q2>100)
+                {
+                    compteur++;
+                }
+            }
+            if(ang>=215 && ang <= 325 && ((evitementOn&&marcheArriere)||(asservissement.traj->TYPE==DROITE&&asservissement.traj->marcheArriere())))
             {
                 if(nodes[i].dist_mm_q2 <= distLimite && nodes[i].dist_mm_q2>100)
                 {
@@ -120,23 +127,28 @@ compteur = 0;
             obstacles++;
             if (obstacles==4&&evitement&&asservissement.traj->TYPE==DROITE)
             {
+              marcheArriere=asservissement.traj->marcheArriere();
 targetX = asservissement.traj->getArriveeX();
 targetY = asservissement.traj->getArriveeY();
 std::cout<<"évitement"<<std::endl;
-asservissement.stop();
 delete(asservissement.traj);
       asservissement.traj = new Attente(100, obtaintime());
 etaitDroite=true;
+evitementOn=true;
             }
         }
 else
 {
 if(obstacles>3&&etaitDroite)
 {
-
-asservissement.traj = new Droite(asservissement.getX(), asservissement.getY(), targetX, targetY, iVMAX,iACCMAX, obtaintime());
+  std::cout<<"droite"<<std::endl;
+  if(!marcheArriere)
+asservissement.traj = SimpleForward(targetX, targetY);
+else
+asservissement.traj = SimpleBackward(targetX, targetY);
 }
 etaitDroite=false;
+evitementOn=false;
  obstacles=0;
         }
 
@@ -148,10 +160,7 @@ switch (idAction)
 {
   case 1: 
   asservissement.traj = SimpleForward(0.65,0);
-action.ventouseAvantOff();
 action.ventouseArriereOff();
-action.leverBras();
-action.rentrerDroite();
 action.rentrerVentouse();
   break;
 case 2: 
@@ -197,12 +206,14 @@ case 2:
   asservissement.traj = SimpleRotation(-PI/2);
   break;
       case 16: 
+      evitement=false;
   asservissement.traj = SimpleBackward(-0.50,1.39);
   break;
     case 17: 
   asservissement.traj = SimpleRotation(0);
   break;
   case 18: 
+  evitement=true;
   asservissement.traj = SimpleForward(-0.35,1.39);
   break;
     case 19: 
@@ -216,6 +227,7 @@ case 2:
   action.sortirVentouse();
   break;
       case 22: 
+      evitement=false;
   asservissement.traj = SimpleBackward(-0.595,1.91);
   action.ventouseArriereOn();
   break;
@@ -228,6 +240,7 @@ case 2:
   break;
     case 25:
     asservissement.traj = SimpleForward(-0.36,1.91);
+    evitement=true;
   break;
   case 26:
     asservissement.traj = SimpleRotation(-0.971);
@@ -239,7 +252,8 @@ case 2:
     asservissement.traj = SimpleRotation(PI);
   break;
     case 29:
-    asservissement.traj = SimpleBackward(0.79, 1);
+    evitement=false;
+    asservissement.traj = SimpleBackward(0.80, 1);
   break;
       case 30:
     asservissement.traj = SimpleAttente(1);

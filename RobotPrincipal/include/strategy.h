@@ -26,6 +26,8 @@ class Strategy
         bool coteJaune;
         bool etaitDroite=false;
         bool evitement=true;
+        bool marcheArriere;
+        bool evitementOn=false;
       	double targetX;
         double targetY;
 

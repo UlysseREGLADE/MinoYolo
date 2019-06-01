@@ -99,7 +99,7 @@ stepperMotors.highZ();
  }
 if(traj->TYPE==ATTENTE)
 {
-//stepperMotors.hardStop();
+stepperMotors.hardStop();
 return;
 }
   //On calcule l'erreur associee a cette position
