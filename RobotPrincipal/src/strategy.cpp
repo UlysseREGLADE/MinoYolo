@@ -1,7 +1,7 @@
 #include "strategy.h"
 #include "uCListener.h"
 #define PI 3.141592653589793
-#define KILLTIME 88
+#define KILLTIME 98
 #define iVMAX 0.28
 #define iACCMAX 0.25
 
@@ -187,62 +187,61 @@ case 2:
   case 12: 
         asservissement.traj = SimpleForward(-0.2,0.1  );
   break;
-    case 13: 
-        asservissement.traj = SimpleBackward(-0.2,1.38);
+  case 13:
+  asservissement.traj = SimpleRotation(-PI/2+0.233);
   break;
     case 14: 
-  asservissement.traj = SimpleRotation(PI);
+        asservissement.traj = SimpleBackward(-0.5,1.35);
   break;
-      case 15: 
-  asservissement.traj = SimpleForward(-0.395,1.38);
-    action.pencherBras();
-      action.claqueDroite();
+    case 15: 
+  asservissement.traj = SimpleRotation(-PI/2);
   break;
-        case 16: 
-  asservissement.traj = SimpleAttente(0.25);
-  action.claqueGauche();
+      case 16: 
+  asservissement.traj = SimpleBackward(-0.50,1.39);
   break;
-  case 17: 
-  asservissement.traj = SimpleBackward(-0.2,1.38);
-  action.leverBras();
-  break;
-    case 18: 
-  asservissement.traj = SimpleRotation(PI/2);
-  break;
-    case 19: 
-  asservissement.traj = SimpleForward(-0.2,1.91);
-  break;
-      case 20: 
+    case 17: 
   asservissement.traj = SimpleRotation(0);
   break;
+  case 18: 
+  asservissement.traj = SimpleForward(-0.35,1.39);
+  break;
+    case 19: 
+  asservissement.traj = SimpleRotation(PI/2);
+  break;
+    case 20: 
+  asservissement.traj = SimpleForward(-0.35,1.91);
+  break;
       case 21: 
-  asservissement.traj = SimpleBackward(-0.565,1.91);
+  asservissement.traj = SimpleRotation(0);
+  break;
+      case 22: 
+  asservissement.traj = SimpleBackward(-0.59,1.91);
   action.ventouseArriereOn();
   break;
-    case 22: 
+    case 23: 
   asservissement.traj = SimpleAttente(0.5);
   action.sortirVentouse();
   break;
-  case 23: 
+  case 24: 
   asservissement.traj = SimpleAttente(0.5);
   action.rentrerVentouse();
   break;
-    case 24:
+    case 25:
     asservissement.traj = SimpleForward(-0.36,1.91);
   break;
-  case 25:
-    asservissement.traj = SimpleRotation(-PI/4);
+  case 26:
+    asservissement.traj = SimpleRotation(-0.971);
   break;
-    case 26:
-    asservissement.traj = SimpleForward(0.57,1.04);
+    case 27:
+    asservissement.traj = SimpleForward(0.40,1);
   break;
-  case 27:
+  case 28:
     asservissement.traj = SimpleRotation(PI);
   break;
-    case 28:
-    asservissement.traj = SimpleBackward(0.7, 1.04);
+    case 29:
+    asservissement.traj = SimpleBackward(0.79, 1);
   break;
-      case 29:
+      case 30:
     asservissement.traj = SimpleAttente(1);
     action.ventouseArriereOff();
   break;
