@@ -160,8 +160,6 @@ switch (idAction)
 {
   case 1: 
   asservissement.traj = SimpleForward(0.65,0);
-action.ventouseArriereOff();
-action.rentrerVentouse();
   break;
 case 2: 
   asservissement.traj = SimpleRotation(PI/2);
@@ -256,8 +254,12 @@ case 2:
     asservissement.traj = SimpleBackward(0.80, 1);
   break;
       case 30:
-    asservissement.traj = SimpleAttente(1);
+    asservissement.traj = SimpleAttente(5);
+    action.sortirVentouse();
     action.ventouseArriereOff();
+  break;
+        case 31:
+    asservissement.traj = SimpleForward(0.50,1);
   break;
 default:
     asservissement.stop();
@@ -267,7 +269,7 @@ action.ventouseAvantOff();
 action.ventouseArriereOff();
 action.leverBras();
 action.rentrerDroite();
-action.rentrerVentouse();
+//action.rentrerVentouse();
     lidar->stopMotor();
     lidar->disconnect();
     RPlidarDriver::DisposeDriver(lidar);
