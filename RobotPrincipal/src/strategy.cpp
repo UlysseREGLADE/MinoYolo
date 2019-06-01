@@ -213,14 +213,14 @@ case 2:
   break;
       case 21: 
   asservissement.traj = SimpleRotation(0);
+  action.sortirVentouse();
   break;
       case 22: 
-  asservissement.traj = SimpleBackward(-0.59,1.91);
+  asservissement.traj = SimpleBackward(-0.595,1.91);
   action.ventouseArriereOn();
   break;
     case 23: 
   asservissement.traj = SimpleAttente(0.5);
-  action.sortirVentouse();
   break;
   case 24: 
   asservissement.traj = SimpleAttente(0.5);
