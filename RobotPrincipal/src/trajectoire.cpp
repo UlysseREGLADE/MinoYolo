@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 #define PI 3.141592653589793
-#define TIMEMARGIN 0.5
+#define TIMEMARGIN 0.25
 
 double gettimetraj()
 {

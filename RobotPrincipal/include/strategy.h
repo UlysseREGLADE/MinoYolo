@@ -32,6 +32,7 @@ class Strategy
         Droite *SimpleForward(double x_arr, double y_arr);
         Droite *SimpleBackward(double x_arr, double y_arr);
         Rotation *SimpleRotation(double theta_arr);
+	Attente *SimpleAttente(double temps);
     };
 
 #endif

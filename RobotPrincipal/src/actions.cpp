@@ -33,6 +33,11 @@ void actions::leverBras()
 	pwmWrite(PIN_BASE , 393);
 }
 
+void actions::pencherBras()
+{
+	pwmWrite(PIN_BASE, 350);
+}
+
 void actions::ventouseAvantOn()
 {
 int en = 21;
@@ -109,13 +114,23 @@ digitalWrite(in2, LOW);
 digitalWrite(en, LOW);
 }
 
+void actions::rentrerDroite()
+{
+	pwmWrite(PIN_BASE +15, 454);
+}
+
 void actions::claqueGauche()
 {
-	pwmWrite(PIN_BASE +15, 154);
+	pwmWrite(PIN_BASE +15, 200);
 }
 void actions::claqueDroite()
 {
-	pwmWrite(PIN_BASE +15, 454);
+	pwmWrite(PIN_BASE +15, 400);
+}
+
+void actions::claqueMilieu()
+{
+	pwmWrite(PIN_BASE +15, 304);
 }
 
 void actions::sortirVentouse()
